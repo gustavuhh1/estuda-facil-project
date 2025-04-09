@@ -1,11 +1,13 @@
 package com.unifor.estuda_facil.controller;
 
+import com.unifor.estuda_facil.exception.EmailAlreadyExists;
 import com.unifor.estuda_facil.models.dto.AdminDTO;
 import com.unifor.estuda_facil.models.entity.Admin;
 import com.unifor.estuda_facil.repository.UsuarioRepository;
 import com.unifor.estuda_facil.service.AdminService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -21,8 +23,14 @@ public class AdminController {
     private UsuarioRepository usuarioRepository;
 
     @PostMapping
-    public ResponseEntity<Admin> criarAdmin(@RequestBody @Valid AdminDTO adminDTO) {
-        Admin novoAdmin = adminService.criarAdmin(adminDTO);
+    public ResponseEntity<?> criarAdmin(@RequestBody @Valid AdminDTO adminDTO) {
+        Admin novoAdmin;
+        try {
+            novoAdmin = adminService.criarAdmin(adminDTO);
+        } catch (EmailAlreadyExists e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+
         return ResponseEntity.ok(novoAdmin);
     }
 

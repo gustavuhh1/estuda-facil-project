@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.exception.EmailAlreadyExists;
 import com.unifor.estuda_facil.models.dto.AdminDTO;
 import com.unifor.estuda_facil.models.entity.Admin;
 import com.unifor.estuda_facil.models.entity.Usuario;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,6 +29,10 @@ public class AdminService {
     public Admin criarAdmin(AdminDTO adminDTO) {
 
         // validar se e-mail já existe
+        Optional<Usuario> usuarioExists = usuarioRepository.findByEmail(adminDTO.getEmail());
+        if(usuarioExists.isPresent()) {
+            throw new EmailAlreadyExists("E-mail já existente");
+        };
 
         Admin admin = new Admin();
         admin.setNome(adminDTO.getNome());
