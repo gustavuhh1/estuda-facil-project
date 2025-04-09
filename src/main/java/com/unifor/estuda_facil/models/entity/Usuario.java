@@ -8,14 +8,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -27,10 +28,10 @@ public class Usuario implements UserDetails {
     private Role role;
 
     // IDs das entidades relacionadas (podem ser NULL)
-    private Long estudanteId;
-    private Long professorId;
-    private Long responsavelId;
-    private Long adminId;
+    private UUID estudanteId;
+    private UUID professorId;
+    private UUID responsavelId;
+    private UUID adminId;
 
     // UserDetails (Spring Security)
     @Override
