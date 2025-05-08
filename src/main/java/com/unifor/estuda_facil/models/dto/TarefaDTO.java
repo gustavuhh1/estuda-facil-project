@@ -18,7 +18,6 @@ public class TarefaDTO {
     @NotNull(message = "Data de entrega é obrigatória")
     private LocalDateTime dataEntrega;
 
-    private String status;
-    private Double nota;
+
     private Long turmaId;
 }

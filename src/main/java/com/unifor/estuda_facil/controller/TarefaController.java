@@ -1,37 +1,80 @@
 package com.unifor.estuda_facil.controller;
 
+import com.unifor.estuda_facil.models.dto.TarefaDTO;
 import com.unifor.estuda_facil.models.entity.Tarefa;
+import com.unifor.estuda_facil.models.entity.Turma;
 import com.unifor.estuda_facil.service.TarefaService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.unifor.estuda_facil.service.TurmaService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/tarefas")
+@RequestMapping("/tarefa")
 public class TarefaController {
 
-    @Autowired
-    private TarefaService tarefaService;
+    private final TarefaService service;
+    private final TurmaService turmaService;
 
-    @GetMapping
-    public List<Tarefa> listarTodas() {
-        return tarefaService.listarTodas();
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Tarefa> buscarPorId(@PathVariable Long id) {
-        return tarefaService.buscarPorId(id);
+    public TarefaController(TarefaService service, TurmaService turmaService) {
+        this.service = service;
+        this.turmaService = turmaService;
     }
 
     @PostMapping
-    public Tarefa salvar(@RequestBody Tarefa tarefa) {
-        return tarefaService.salvar(tarefa);
+    public ResponseEntity<Tarefa> criar(@RequestBody @Valid TarefaDTO dto) {
+        Tarefa t = new Tarefa();
+        t.setTitulo(dto.getTitulo());
+        t.setDescricao(dto.getDescricao());
+        t.setDataEntrega(dto.getDataEntrega());
+        t.setStatus(dto.getStatus());
+        t.setNota(dto.getNota());
+        if (dto.getTurmaId() != null) {
+            Optional<Turma> turOpt = turmaService.buscarPorId(dto.getTurmaId());
+            turOpt.ifPresent(t::setTurma);
+        }
+        Tarefa saved = service.salvar(t);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Tarefa> buscar(@PathVariable Long id) {
+        Optional<Tarefa> tOpt = service.buscarPorId(id);
+        if (tOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tOpt.get());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Tarefa> atualizar(
+            @PathVariable Long id,
+            @RequestBody @Valid TarefaDTO dto
+    ) {
+        Optional<Tarefa> tOpt = service.buscarPorId(id);
+        if (tOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Tarefa existing = tOpt.get();
+        existing.setTitulo(dto.getTitulo());
+        existing.setDescricao(dto.getDescricao());
+        existing.setDataEntrega(dto.getDataEntrega());
+        existing.setStatus(dto.getStatus());
+        existing.setNota(dto.getNota());
+        if (dto.getTurmaId() != null) {
+            Optional<Turma> turOpt = turmaService.buscarPorId(dto.getTurmaId());
+            turOpt.ifPresent(existing::setTurma);
+        }
+        Tarefa updated = service.salvar(existing);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
-        tarefaService.deletar(id);
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

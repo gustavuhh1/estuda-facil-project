@@ -1,26 +1,39 @@
 package com.unifor.estuda_facil.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.unifor.estuda_facil.models.dto.TokenRequestDTO;
+import com.unifor.estuda_facil.models.dto.TokenResponseDTO;
+import com.unifor.estuda_facil.models.dto.TokenValidationDTO;
+import com.unifor.estuda_facil.service.TokenService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/token")
 public class TokenController {
 
+    private final TokenService service;
+
+    public TokenController(TokenService service) {
+        this.service = service;
+    }
+
     @PostMapping("/gerar")
-    public ResponseEntity<JsonNode> gerarToken(@RequestBody JsonNode payload) {
-        // TODO: implementar geração de token (registro/recuperação)
-        JsonNode response = payload; // placeholder
-        return ResponseEntity.ok(response);
+    public ResponseEntity<TokenResponseDTO> gerarToken(
+            @RequestBody @Valid TokenRequestDTO req
+    ) {
+        TokenResponseDTO resp = service.generate(req);
+        return ResponseEntity.ok(resp);
     }
 
     @PostMapping("/validar")
-    public ResponseEntity<Void> validarToken(@RequestBody JsonNode payload) {
-        // TODO: verificar validade e retornar status apropriado
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> validarToken(
+            @RequestBody @Valid TokenValidationDTO req
+    ) {
+        boolean ok = service.validate(req);
+        if (ok) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(401).build();
     }
 }
