@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,10 +19,12 @@ public class TarefaController {
 
     private final TarefaService service;
     private final TurmaService turmaService;
+    private final TarefaService tarefaService;
 
-    public TarefaController(TarefaService service, TurmaService turmaService) {
+    public TarefaController(TarefaService service, TurmaService turmaService, TarefaService tarefaService) {
         this.service = service;
         this.turmaService = turmaService;
+        this.tarefaService = tarefaService;
     }
 
     @PostMapping
@@ -30,8 +33,6 @@ public class TarefaController {
         t.setTitulo(dto.getTitulo());
         t.setDescricao(dto.getDescricao());
         t.setDataEntrega(dto.getDataEntrega());
-        t.setStatus(dto.getStatus());
-        t.setNota(dto.getNota());
         if (dto.getTurmaId() != null) {
             Optional<Turma> turOpt = turmaService.buscarPorId(dto.getTurmaId());
             turOpt.ifPresent(t::setTurma);
@@ -49,6 +50,13 @@ public class TarefaController {
         return ResponseEntity.ok(tOpt.get());
     }
 
+    @GetMapping()
+    public ResponseEntity<List<Tarefa>> buscar() {
+        List<Tarefa> tarefas = tarefaService.listarTodas();
+
+        return ResponseEntity.ok(tarefas);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Tarefa> atualizar(
             @PathVariable Long id,
@@ -62,8 +70,6 @@ public class TarefaController {
         existing.setTitulo(dto.getTitulo());
         existing.setDescricao(dto.getDescricao());
         existing.setDataEntrega(dto.getDataEntrega());
-        existing.setStatus(dto.getStatus());
-        existing.setNota(dto.getNota());
         if (dto.getTurmaId() != null) {
             Optional<Turma> turOpt = turmaService.buscarPorId(dto.getTurmaId());
             turOpt.ifPresent(existing::setTurma);

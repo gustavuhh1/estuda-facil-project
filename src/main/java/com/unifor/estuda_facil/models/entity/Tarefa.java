@@ -1,11 +1,13 @@
 package com.unifor.estuda_facil.models.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -21,13 +23,11 @@ public class Tarefa {
 
     private String descricao;
 
-    private LocalDateTime dataEntrega;
-
-    private String status; // Pode ser: PENDENTE, ENTREGUE, ATRASADA, etc.
-
-    private Double nota; // Pode ser null até ser corrigida
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate dataEntrega;
 
     @ManyToOne
+    @Nullable
     @JoinColumn(name = "turma_id")
     private Turma turma;
 }
