@@ -19,5 +19,5 @@ public class Turma {
     private String anoLetivo;
 
     @OneToMany(mappedBy = "turma")
-    private List<Estudante> estudantes;
+    private List<Aluno> alunos;
 }

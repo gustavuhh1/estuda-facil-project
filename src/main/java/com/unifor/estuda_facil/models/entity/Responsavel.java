@@ -19,5 +19,5 @@ public class Responsavel {
     private String cpf;
 
     @ManyToMany(mappedBy = "responsaveis")
-    private List<Estudante> estudantes;
+    private List<Aluno> alunos;
 }
