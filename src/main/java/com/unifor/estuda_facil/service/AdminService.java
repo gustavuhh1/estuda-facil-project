@@ -26,6 +26,8 @@ public class AdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
+
     public Admin criarAdmin(AdminDTO adminDTO) {
 
         // validar se e-mail já existe

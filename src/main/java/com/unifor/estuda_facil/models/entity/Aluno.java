@@ -2,13 +2,14 @@ package com.unifor.estuda_facil.models.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name = "estudantes")
-public class Estudante {
+@Table(name = "alunos")
+public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,8 +26,8 @@ public class Estudante {
 
     @ManyToMany
     @JoinTable(
-            name = "estudante_responsavel",
-            joinColumns = @JoinColumn(name = "estudante_id"),
+            name = "aluno_responsavel",
+            joinColumns = @JoinColumn(name = "aluno_id"),
             inverseJoinColumns = @JoinColumn(name = "responsavel_id")
     )
     private List<Responsavel> responsaveis;
