@@ -46,9 +46,16 @@ public class MensagemController {
         mensagem.setDataEnvio(LocalDateTime.now());
         mensagem.setLida(false);
 
+        // Lógica de resposta
+        if (dto.getRespostaParaId() != null) {
+            Optional<Mensagem> respostaParaOpt = mensagemRepository.findById(dto.getRespostaParaId());
+            respostaParaOpt.ifPresent(mensagem::setRespostaPara);
+        }
+
         mensagemRepository.save(mensagem);
         return ResponseEntity.ok("Mensagem enviada com sucesso.");
     }
+
 
     // GET /mensagens/recebidas?responsavelId=123
     @GetMapping("/recebidas")
@@ -80,5 +87,34 @@ public class MensagemController {
 
         return ResponseEntity.ok("Mensagem marcada como lida.");
     }
+    // GET /mensagens/nao-lidas?responsavelId=123
+    @GetMapping("/nao-lidas")
+    public ResponseEntity<Long> contarNaoLidas(@RequestParam Long responsavelId) {
+        boolean exists = responsavelRepository.existsById(responsavelId);
+        if (!exists) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        long totalNaoLidas = mensagemRepository.countByDestinatarioIdAndLidaFalse(responsavelId);
+        return ResponseEntity.ok(totalNaoLidas);
+    }
+    // GET /mensagens/conversa?professorId=1&responsavelId=2
+    @GetMapping("/conversa")
+    public ResponseEntity<List<Mensagem>> obterConversaEntreProfessorEResponsavel(
+            @RequestParam Long professorId,
+            @RequestParam Long responsavelId) {
+
+        boolean professorExiste = professorRepository.existsById(professorId);
+        boolean responsavelExiste = responsavelRepository.existsById(responsavelId);
+
+        if (!professorExiste || !responsavelExiste) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Mensagem> conversa = mensagemRepository.buscarConversaEntre(professorId, responsavelId);
+        return ResponseEntity.ok(conversa);
+    }
+
+
 
 }

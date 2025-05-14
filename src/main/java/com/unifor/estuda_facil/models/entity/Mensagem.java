@@ -25,6 +25,11 @@ public class Mensagem {
     @JoinColumn(name = "responsavel_id", nullable = false)
     private Responsavel destinatario;
 
+    @ManyToOne
+    @JoinColumn(name = "resposta_para_id")
+    private Mensagem respostaPara;
+
+
     private String conteudo;
 
     private LocalDateTime dataEnvio;
