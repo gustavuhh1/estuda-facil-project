@@ -20,4 +20,6 @@ public class TarefaDTO {
 
 
     private Long turmaId;
+
+
 }

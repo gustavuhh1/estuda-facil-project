@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -29,14 +30,22 @@ public class AvisoController {
         Aviso a = new Aviso();
         a.setTitulo(dto.getTitulo());
         a.setDescricao(dto.getDescricao());
-        a.setDataCriacao(dto.getDataCriacao());
+
+        if (dto.getDataCriacao() != null) {
+            a.setDataCriacao(dto.getDataCriacao());
+        } else {
+            a.setDataCriacao(LocalDateTime.now());
+        }
+
         if (dto.getTurmaId() != null) {
             Optional<Turma> turOpt = turmaService.buscarPorId(dto.getTurmaId());
             turOpt.ifPresent(a::setTurma);
         }
+
         Aviso saved = service.salvar(a);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Aviso> buscar(@PathVariable Long id) {
@@ -52,4 +61,41 @@ public class AvisoController {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping
+    public ResponseEntity<?> listarPorTurma(@RequestParam(required = false) Long turmaId) {
+        if (turmaId != null) {
+            return ResponseEntity.ok(service.listarPorTurmaOuGerais(turmaId));
+        } else {
+            return ResponseEntity.ok(service.listarTodosOrdenado());
+        }
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody @Valid AvisoDTO dto) {
+        Optional<Aviso> avisoOpt = service.buscarPorId(id);
+        if (avisoOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Aviso aviso = avisoOpt.get();
+        aviso.setTitulo(dto.getTitulo());
+        aviso.setDescricao(dto.getDescricao());
+
+        // Atualiza a data se for passada (senão mantém)
+        if (dto.getDataCriacao() != null) {
+            aviso.setDataCriacao(dto.getDataCriacao());
+        }
+
+        // Atualiza a turma se passada
+        if (dto.getTurmaId() != null) {
+            Optional<Turma> turmaOpt = turmaService.buscarPorId(dto.getTurmaId());
+            turmaOpt.ifPresent(aviso::setTurma);
+        } else {
+            aviso.setTurma(null); // aviso geral
+        }
+
+        Aviso atualizado = service.salvar(aviso);
+        return ResponseEntity.ok(atualizado);
+    }
+
+
 }
