@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.entity.AgendaEvento;
 import com.unifor.estuda_facil.models.dto.AgendaEventoDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
@@ -20,6 +21,7 @@ public class AgendaEventoService {
     private final TurmaRepository turmaRepository;
     private final ProfessorRepository professorRepository;
 
+    @Loggable
     public AgendaEvento criarEvento(AgendaEventoDTO dto) {
         Professor professor = professorRepository.findById(dto.getProfessorId())
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
@@ -37,21 +39,21 @@ public class AgendaEventoService {
 
         return agendaEventoRepository.save(evento);
     }
-
+    @Loggable
     public List<AgendaEvento> listarPorTurma(Long turmaId) {
         if (!turmaRepository.existsById(turmaId)) {
             throw new RuntimeException("Turma não encontrada");
         }
         return agendaEventoRepository.findByTurmaIdOrderByDataEventoAsc(turmaId);
     }
-
+    @Loggable
     public List<AgendaEvento> listarPorProfessor(Long professorId) {
         if (!professorRepository.existsById(professorId)) {
             throw new RuntimeException("Professor não encontrado");
         }
         return agendaEventoRepository.findByProfessorIdOrderByDataEventoAsc(professorId);
     }
-
+    @Loggable
     public AgendaEvento editarEvento(Long id, AgendaEventoDTO dto) {
         AgendaEvento evento = agendaEventoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
@@ -71,7 +73,7 @@ public class AgendaEventoService {
 
         return agendaEventoRepository.save(evento);
     }
-
+    @Loggable
     public void deletarEvento(Long id) {
         if (!agendaEventoRepository.existsById(id)) {
             throw new RuntimeException("Evento não encontrado");
