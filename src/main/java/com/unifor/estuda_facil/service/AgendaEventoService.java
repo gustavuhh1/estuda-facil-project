@@ -1,6 +1,6 @@
 package com.unifor.estuda_facil.service;
 
-import com.unifor.estuda_facil.models.AgendaEvento;
+import com.unifor.estuda_facil.models.entity.AgendaEvento;
 import com.unifor.estuda_facil.models.dto.AgendaEventoDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.Turma;
@@ -78,4 +78,7 @@ public class AgendaEventoService {
         }
         agendaEventoRepository.deleteById(id);
     }
+
+
+
 }

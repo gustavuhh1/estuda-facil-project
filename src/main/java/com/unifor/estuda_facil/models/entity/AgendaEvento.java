@@ -1,7 +1,5 @@
-package com.unifor.estuda_facil.models;
+package com.unifor.estuda_facil.models.entity;
 
-import com.unifor.estuda_facil.models.entity.Professor;
-import com.unifor.estuda_facil.models.entity.Turma;
 import com.unifor.estuda_facil.models.entity.enums.TipoEvento;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,4 +31,9 @@ public class AgendaEvento {
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
     private Professor professor;
+
+    @ManyToOne
+    @JoinColumn(name = "aluno_id")
+    private Aluno aluno;
+
 }

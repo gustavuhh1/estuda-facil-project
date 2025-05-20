@@ -1,6 +1,6 @@
 package com.unifor.estuda_facil.controller;
 
-import com.unifor.estuda_facil.models.AgendaEvento;
+import com.unifor.estuda_facil.models.entity.AgendaEvento;
 import com.unifor.estuda_facil.models.dto.AgendaEventoDTO;
 import com.unifor.estuda_facil.service.AgendaEventoService;
 import org.springframework.http.ResponseEntity;
@@ -45,4 +45,5 @@ public class AgendaEventoController {
         agendaEventoService.deletarEvento(id);
         return ResponseEntity.ok("Evento deletado com sucesso.");
     }
+
 }
