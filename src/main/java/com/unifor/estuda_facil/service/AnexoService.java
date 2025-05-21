@@ -1,7 +1,7 @@
 package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
-import com.unifor.estuda_facil.factory.AnexoFactoryImpl;
+import com.unifor.estuda_facil.factory.AnexoFactory;
 import com.unifor.estuda_facil.models.dto.AnexoDTO;
 import com.unifor.estuda_facil.models.entity.Anexo;
 import com.unifor.estuda_facil.repository.AnexoRepository;
@@ -20,7 +20,7 @@ import java.util.List;
 public class AnexoService {
 
     private final AnexoRepository anexoRepository;
-    private final AnexoFactoryImpl anexoFactoryImpl;
+    private final AnexoFactory anexoFactoryImpl;
 
     private final String uploadDir = "uploads/";
 
