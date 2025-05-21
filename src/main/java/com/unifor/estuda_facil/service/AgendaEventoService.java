@@ -2,8 +2,9 @@ package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.aspect.Validate;
-import com.unifor.estuda_facil.models.entity.AgendaEvento;
+import com.unifor.estuda_facil.factory.AgendaEventoFactory;
 import com.unifor.estuda_facil.models.dto.AgendaEventoDTO;
+import com.unifor.estuda_facil.models.entity.AgendaEvento;
 import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.Turma;
 import com.unifor.estuda_facil.repository.AgendaEventoRepository;
@@ -21,27 +22,20 @@ public class AgendaEventoService {
     private final AgendaEventoRepository agendaEventoRepository;
     private final TurmaRepository turmaRepository;
     private final ProfessorRepository professorRepository;
-
+    private final AgendaEventoFactory agendaEventoFactory;
 
     @Loggable
     @Validate
     public AgendaEvento criarEvento(AgendaEventoDTO dto) {
         Professor professor = professorRepository.findById(dto.getProfessorId())
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
-
         Turma turma = turmaRepository.findById(dto.getTurmaId())
                 .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
 
-        AgendaEvento evento = new AgendaEvento();
-        evento.setTitulo(dto.getTitulo());
-        evento.setDescricao(dto.getDescricao());
-        evento.setDataEvento(dto.getDataEvento());
-        evento.setTipo(dto.getTipo());
-        evento.setProfessor(professor);
-        evento.setTurma(turma);
-
+        AgendaEvento evento = agendaEventoFactory.criar(dto, professor, turma);
         return agendaEventoRepository.save(evento);
     }
+
     @Loggable
     public List<AgendaEvento> listarPorTurma(Long turmaId) {
         if (!turmaRepository.existsById(turmaId)) {
@@ -49,6 +43,7 @@ public class AgendaEventoService {
         }
         return agendaEventoRepository.findByTurmaIdOrderByDataEventoAsc(turmaId);
     }
+
     @Loggable
     public List<AgendaEvento> listarPorProfessor(Long professorId) {
         if (!professorRepository.existsById(professorId)) {
@@ -56,27 +51,21 @@ public class AgendaEventoService {
         }
         return agendaEventoRepository.findByProfessorIdOrderByDataEventoAsc(professorId);
     }
+
     @Loggable
     @Validate
     public AgendaEvento editarEvento(Long id, AgendaEventoDTO dto) {
         AgendaEvento evento = agendaEventoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
-
         Professor professor = professorRepository.findById(dto.getProfessorId())
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
-
         Turma turma = turmaRepository.findById(dto.getTurmaId())
                 .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
 
-        evento.setTitulo(dto.getTitulo());
-        evento.setDescricao(dto.getDescricao());
-        evento.setDataEvento(dto.getDataEvento());
-        evento.setTipo(dto.getTipo());
-        evento.setProfessor(professor);
-        evento.setTurma(turma);
-
+        agendaEventoFactory.atualizar(evento, dto, professor, turma);
         return agendaEventoRepository.save(evento);
     }
+
     @Loggable
     public void deletarEvento(Long id) {
         if (!agendaEventoRepository.existsById(id)) {
@@ -84,7 +73,4 @@ public class AgendaEventoService {
         }
         agendaEventoRepository.deleteById(id);
     }
-
-
-
 }
