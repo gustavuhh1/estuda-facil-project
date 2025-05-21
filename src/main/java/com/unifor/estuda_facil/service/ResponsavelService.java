@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.dto.ResponsavelDTO;
 import com.unifor.estuda_facil.models.entity.Responsavel;
 import com.unifor.estuda_facil.repository.ResponsavelRepository;
@@ -13,7 +14,7 @@ import java.util.List;
 public class ResponsavelService {
 
     private final ResponsavelRepository responsavelRepository;
-
+    @Loggable
     public Responsavel criarResponsavel(ResponsavelDTO dto) {
         Responsavel responsavel = new Responsavel();
         responsavel.setNome(dto.getNome());
@@ -21,7 +22,7 @@ public class ResponsavelService {
         responsavel.setCpf(dto.getCpf());
         return responsavelRepository.save(responsavel);
     }
-
+    @Loggable
     public List<Responsavel> listarTodos() {
         return responsavelRepository.findAll();
     }
@@ -30,7 +31,7 @@ public class ResponsavelService {
         return responsavelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Responsável não encontrado"));
     }
-
+    @Loggable
     public Responsavel atualizar(Long id, ResponsavelDTO dto) {
         Responsavel r = buscarPorId(id);
         r.setNome(dto.getNome());
@@ -38,7 +39,7 @@ public class ResponsavelService {
         r.setCpf(dto.getCpf());
         return responsavelRepository.save(r);
     }
-
+    @Loggable
     public void deletar(Long id) {
         responsavelRepository.deleteById(id);
     }

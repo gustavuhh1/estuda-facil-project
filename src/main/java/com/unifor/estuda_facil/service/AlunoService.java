@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.dto.AlunoDTO;
 import com.unifor.estuda_facil.models.entity.Aluno;
 import com.unifor.estuda_facil.models.entity.Turma;
@@ -21,6 +22,7 @@ public class AlunoService {
     private final TurmaRepository turmaRepository;
     private final ResponsavelRepository responsavelRepository;
 
+    @Loggable
     public Aluno criarAluno(AlunoDTO dto) {
         Aluno aluno = new Aluno();
         aluno.setNome(dto.getNome());
@@ -43,7 +45,7 @@ public class AlunoService {
 
         return alunoRepository.save(aluno);
     }
-
+    @Loggable
     public List<Aluno> listarAlunos() {
         return alunoRepository.findAll();
     }
@@ -52,7 +54,7 @@ public class AlunoService {
         return alunoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado"));
     }
-
+    @Loggable
     public Aluno atualizarAluno(Long id, AlunoDTO dto) {
         Aluno aluno = buscarPorId(id);
         aluno.setNome(dto.getNome());
@@ -67,7 +69,7 @@ public class AlunoService {
 
         return alunoRepository.save(aluno);
     }
-
+    @Loggable
     public void deletarAluno(Long id) {
         alunoRepository.deleteById(id);
     }

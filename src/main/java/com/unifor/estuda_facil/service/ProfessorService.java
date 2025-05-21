@@ -1,6 +1,7 @@
 // src/main/java/com/unifor/estuda_facil/service/ProfessorService.java
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.dto.ProfessorDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.repository.ProfessorRepository;
@@ -15,6 +16,7 @@ public class ProfessorService {
 
     private final ProfessorRepository professorRepository;
 
+    @Loggable
     public Professor criarProfessor(ProfessorDTO dto) {
         Professor p = new Professor();
         p.setNome(dto.getNome());
@@ -22,7 +24,7 @@ public class ProfessorService {
         p.setTelefone(dto.getTelefone());
         return professorRepository.save(p);
     }
-
+    @Loggable
     public List<Professor> listarProfessores() {
         return professorRepository.findAll();
     }
@@ -31,7 +33,7 @@ public class ProfessorService {
         return professorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Professor não encontrado"));
     }
-
+    @Loggable
     public Professor atualizarProfessor(Long id, ProfessorDTO dto) {
         Professor p = buscarPorId(id);
         p.setNome(dto.getNome());
@@ -39,7 +41,7 @@ public class ProfessorService {
         p.setTelefone(dto.getTelefone());
         return professorRepository.save(p);
     }
-
+    @Loggable
     public void deletarProfessor(Long id) {
         professorRepository.deleteById(id);
     }

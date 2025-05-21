@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.dto.MensagemDTO;
 import com.unifor.estuda_facil.models.entity.Mensagem;
 import com.unifor.estuda_facil.models.entity.Professor;
@@ -21,6 +22,7 @@ public class MensagemService {
     private final ProfessorRepository professorRepository;
     private final ResponsavelRepository responsavelRepository;
 
+    @Loggable
     public void enviarMensagem(MensagemDTO dto) {
         Professor professor = professorRepository.findById(dto.getProfessorId())
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
@@ -41,14 +43,14 @@ public class MensagemService {
 
         mensagemRepository.save(mensagem);
     }
-
+    @Loggable
     public List<Mensagem> listarRecebidas(Long responsavelId) {
         Responsavel responsavel = responsavelRepository.findById(responsavelId)
                 .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
 
         return mensagemRepository.findByDestinatarioOrderByDataEnvioDesc(responsavel);
     }
-
+    @Loggable
     public void marcarComoLida(Long id) {
         Mensagem mensagem = mensagemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Mensagem não encontrada"));
@@ -58,14 +60,14 @@ public class MensagemService {
             mensagemRepository.save(mensagem);
         }
     }
-
+    @Loggable
     public long contarNaoLidas(Long responsavelId) {
         if (!responsavelRepository.existsById(responsavelId)) {
             throw new RuntimeException("Responsável não encontrado");
         }
         return mensagemRepository.countByDestinatarioIdAndLidaFalse(responsavelId);
     }
-
+    @Loggable
     public List<Mensagem> obterConversa(Long professorId, Long responsavelId) {
         if (!professorRepository.existsById(professorId)) {
             throw new RuntimeException("Professor não encontrado");
