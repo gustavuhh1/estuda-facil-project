@@ -76,6 +76,7 @@ Distribuído sob licença **MIT**. Veja o arquivo `LICENSE` para mais informaç�
 ## ✉️ Contato
 
 **Gustavo Martins** - [@gustavo-martinsr](www.linkedin.com/in/gustavo-martinsr/) - gustavomrodrigues11@edu.unifor.br
+**Lucas Ximenes**   - [@lucas-ximenes30](www.linkedin.com/in/lucas-ximenes30/)   - lucasximenes177@gmail.com
 
 Projeto desenvolvido como trabalho de projeto acadêmico na **Universidade de Fortaleza - Unifor**
 
