@@ -73,4 +73,15 @@ public class AlunoService {
     public void deletarAluno(Long id) {
         alunoRepository.deleteById(id);
     }
+    public void atribuirTurma(Long alunoId, Long turmaId) {
+        Aluno aluno = alunoRepository.findById(alunoId)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        Turma turma = turmaRepository.findById(turmaId)
+                .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
+
+        aluno.setTurma(turma);
+        alunoRepository.save(aluno);
+    }
+
 }

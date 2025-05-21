@@ -73,4 +73,9 @@ public class AgendaEventoService {
         }
         agendaEventoRepository.deleteById(id);
     }
+    @Loggable
+    public List<AgendaEvento> listarAgendaDoAluno(Long alunoId, Long turmaId) {
+        return agendaEventoRepository.buscarAgendaCompletaDoAluno(alunoId, turmaId);
+    }
+
 }

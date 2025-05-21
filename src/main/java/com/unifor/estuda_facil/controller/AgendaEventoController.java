@@ -33,6 +33,12 @@ public class AgendaEventoController {
     public ResponseEntity<List<AgendaEvento>> listarPorProfessor(@PathVariable Long professorId) {
         return ResponseEntity.ok(agendaEventoService.listarPorProfessor(professorId));
     }
+    @GetMapping("/aluno/{alunoId}")
+    public ResponseEntity<List<AgendaEvento>> listarAgendaDoAluno(@PathVariable Long alunoId, @RequestParam Long turmaId) {
+        List<AgendaEvento> eventos = agendaEventoService.listarAgendaDoAluno(alunoId, turmaId);
+        return ResponseEntity.ok(eventos);
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<String> editarEvento(@PathVariable Long id, @RequestBody AgendaEventoDTO dto) {
