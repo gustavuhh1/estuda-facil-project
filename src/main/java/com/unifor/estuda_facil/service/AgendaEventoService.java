@@ -1,6 +1,7 @@
 package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
+import com.unifor.estuda_facil.aspect.Validate;
 import com.unifor.estuda_facil.models.entity.AgendaEvento;
 import com.unifor.estuda_facil.models.dto.AgendaEventoDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
@@ -21,7 +22,9 @@ public class AgendaEventoService {
     private final TurmaRepository turmaRepository;
     private final ProfessorRepository professorRepository;
 
+
     @Loggable
+    @Validate
     public AgendaEvento criarEvento(AgendaEventoDTO dto) {
         Professor professor = professorRepository.findById(dto.getProfessorId())
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
@@ -54,6 +57,7 @@ public class AgendaEventoService {
         return agendaEventoRepository.findByProfessorIdOrderByDataEventoAsc(professorId);
     }
     @Loggable
+    @Validate
     public AgendaEvento editarEvento(Long id, AgendaEventoDTO dto) {
         AgendaEvento evento = agendaEventoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
