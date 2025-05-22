@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 @Component
 public class ValidationAspect {
 
-    @Before("@annotation(com.unifor.estuda_facil.aspects.Validate)")
+    @Before("@annotation(com.unifor.estuda_facil.aspect.Validate)")
     public void validarCamposObrigatorios(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
 
