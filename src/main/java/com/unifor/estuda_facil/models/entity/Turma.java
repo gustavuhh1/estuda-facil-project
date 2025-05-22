@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class Turma {
     private String anoLetivo;
 
     @OneToMany(mappedBy = "turma")
+    @JsonManagedReference
     private List<Aluno> alunos;
 
     @ManyToMany
@@ -29,4 +31,6 @@ public class Turma {
             inverseJoinColumns = @JoinColumn(name = "professor_id")
     )
     private List<Professor> professores;
+
+
 }

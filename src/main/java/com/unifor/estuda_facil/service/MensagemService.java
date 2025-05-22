@@ -1,6 +1,7 @@
 package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
+import com.unifor.estuda_facil.factory.MensagemFactory;
 import com.unifor.estuda_facil.models.dto.MensagemDTO;
 import com.unifor.estuda_facil.models.entity.Mensagem;
 import com.unifor.estuda_facil.models.entity.Professor;
@@ -11,7 +12,6 @@ import com.unifor.estuda_facil.repository.ResponsavelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,6 +21,8 @@ public class MensagemService {
     private final MensagemRepository mensagemRepository;
     private final ProfessorRepository professorRepository;
     private final ResponsavelRepository responsavelRepository;
+    private final MensagemFactory mensagemFactory;
+
 
     @Loggable
     public void enviarMensagem(MensagemDTO dto) {
@@ -29,12 +31,7 @@ public class MensagemService {
         Responsavel responsavel = responsavelRepository.findById(dto.getResponsavelId())
                 .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
 
-        Mensagem mensagem = new Mensagem();
-        mensagem.setRemetente(professor);
-        mensagem.setDestinatario(responsavel);
-        mensagem.setConteudo(dto.getConteudo());
-        mensagem.setDataEnvio(LocalDateTime.now());
-        mensagem.setLida(false);
+        Mensagem mensagem = mensagemFactory.criarMensagem(dto, professor, responsavel);
 
         if (dto.getRespostaParaId() != null) {
             mensagemRepository.findById(dto.getRespostaParaId())
@@ -43,6 +40,7 @@ public class MensagemService {
 
         mensagemRepository.save(mensagem);
     }
+
     @Loggable
     public List<Mensagem> listarRecebidas(Long responsavelId) {
         Responsavel responsavel = responsavelRepository.findById(responsavelId)

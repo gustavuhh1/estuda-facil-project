@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,7 +23,9 @@ public class Aluno {
 
     @ManyToOne
     @JoinColumn(name = "turma_id")
+    @JsonBackReference
     private Turma turma;
+
 
     @ManyToMany
     @JoinTable(

@@ -25,6 +25,14 @@ public class AlunoController {
         return ResponseEntity.status(201).body(a);
     }
 
+    @PutMapping("/{alunoId}/turma/{turmaId}")
+    public ResponseEntity<String> atribuirTurma(@PathVariable Long alunoId, @PathVariable Long turmaId) {
+        service.atribuirTurma(alunoId, turmaId);
+        return ResponseEntity.ok("Turma atribuída ao aluno com sucesso!");
+    }
+
+
+
     @GetMapping
     public ResponseEntity<List<Aluno>> listar() {
         return ResponseEntity.ok(service.listarAlunos());
