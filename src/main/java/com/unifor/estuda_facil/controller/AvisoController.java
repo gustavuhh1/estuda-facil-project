@@ -8,7 +8,6 @@ import com.unifor.estuda_facil.service.TurmaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -27,7 +26,6 @@ public class AvisoController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
     public ResponseEntity<Aviso> criar(@RequestBody @Valid AvisoDTO dto) {
         Aviso a = new Aviso();
         a.setTitulo(dto.getTitulo());
@@ -50,7 +48,6 @@ public class AvisoController {
 
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO', 'RESPONSAVEL')")
     public ResponseEntity<Aviso> buscar(@PathVariable Long id) {
         Optional<Aviso> aOpt = service.buscarPorId(id);
         if (aOpt.isEmpty()) {
@@ -60,13 +57,11 @@ public class AvisoController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
     @GetMapping
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO', 'RESPONSAVEL')")
     public ResponseEntity<?> listarPorTurma(@RequestParam(required = false) Long turmaId) {
         if (turmaId != null) {
             return ResponseEntity.ok(service.listarPorTurmaOuGerais(turmaId));
@@ -75,7 +70,6 @@ public class AvisoController {
         }
     }
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody @Valid AvisoDTO dto) {
         Optional<Aviso> avisoOpt = service.buscarPorId(id);
         if (avisoOpt.isEmpty()) {

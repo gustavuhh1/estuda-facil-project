@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.exception.EmailAlreadyExists;
 import com.unifor.estuda_facil.models.dto.AdminDTO;
 import com.unifor.estuda_facil.models.entity.Admin;
@@ -27,7 +28,7 @@ public class AdminService {
     private PasswordEncoder passwordEncoder;
 
 
-
+    @Loggable
     public Admin criarAdmin(AdminDTO adminDTO) {
 
         // validar se e-mail já existe
@@ -52,7 +53,7 @@ public class AdminService {
 
         return adminRepository.save(admin);
     }
-
+    @Loggable
     public List<Admin> listarAdmins() {
         return adminRepository.findAll();
     }
@@ -61,7 +62,7 @@ public class AdminService {
         return adminRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Admin não encontrado!"));
     }
-
+    @Loggable
     public Admin atualizarAdmin(UUID id, AdminDTO adminAtualizado) {
         Admin adminExistente = buscarPorId(id);
         adminExistente.setNome(adminAtualizado.getNome());
@@ -71,7 +72,7 @@ public class AdminService {
         return adminRepository.save(adminExistente);
     }
 
-    // Deletar
+    @Loggable
     public void deletarAdmin(UUID id) {
         adminRepository.deleteById(id);
     }

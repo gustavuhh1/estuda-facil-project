@@ -5,10 +5,10 @@ import com.unifor.estuda_facil.models.entity.Tarefa;
 import com.unifor.estuda_facil.models.entity.Turma;
 import com.unifor.estuda_facil.service.TarefaService;
 import com.unifor.estuda_facil.service.TurmaService;
+import com.unifor.estuda_facil.factory.TarefaFactory;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,75 +18,60 @@ import java.util.Optional;
 @RequestMapping("/tarefa")
 public class TarefaController {
 
-    private final TarefaService service;
-    private final TurmaService turmaService;
     private final TarefaService tarefaService;
+    private final TurmaService turmaService;
 
-    public TarefaController(TarefaService service, TurmaService turmaService, TarefaService tarefaService) {
-        this.service = service;
-        this.turmaService = turmaService;
+    public TarefaController(TarefaService tarefaService, TurmaService turmaService) {
         this.tarefaService = tarefaService;
+        this.turmaService = turmaService;
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
     public ResponseEntity<Tarefa> criar(@RequestBody @Valid TarefaDTO dto) {
-        Tarefa t = new Tarefa();
-        t.setTitulo(dto.getTitulo());
-        t.setDescricao(dto.getDescricao());
-        t.setDataEntrega(dto.getDataEntrega());
+        Turma turma = null;
         if (dto.getTurmaId() != null) {
-            Optional<Turma> turOpt = turmaService.buscarPorId(dto.getTurmaId());
-            turOpt.ifPresent(t::setTurma);
+            turma = turmaService.buscarPorId(dto.getTurmaId())
+                    .orElseThrow(() -> new IllegalArgumentException("Turma não encontrada"));
         }
-        Tarefa saved = service.salvar(t);
+
+        Tarefa tarefa = TarefaFactory.criarTarefa(dto, turma);
+        Tarefa saved = tarefaService.salvar(tarefa);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO', 'RESPONSAVEL')")
     public ResponseEntity<Tarefa> buscar(@PathVariable Long id) {
-        Optional<Tarefa> tOpt = service.buscarPorId(id);
-        if (tOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(tOpt.get());
+        return tarefaService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping()
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO', 'RESPONSAVEL')")
-    public ResponseEntity<List<Tarefa>> buscar() {
-        List<Tarefa> tarefas = tarefaService.listarTodas();
-
-        return ResponseEntity.ok(tarefas);
+    @GetMapping
+    public ResponseEntity<List<Tarefa>> listar() {
+        return ResponseEntity.ok(tarefaService.listarTodas());
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
-    public ResponseEntity<Tarefa> atualizar(
-            @PathVariable Long id,
-            @RequestBody @Valid TarefaDTO dto
-    ) {
-        Optional<Tarefa> tOpt = service.buscarPorId(id);
-        if (tOpt.isEmpty()) {
+    public ResponseEntity<Tarefa> atualizar(@PathVariable Long id, @RequestBody @Valid TarefaDTO dto) {
+        Optional<Tarefa> optTarefa = tarefaService.buscarPorId(id);
+        if (optTarefa.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        Tarefa existing = tOpt.get();
-        existing.setTitulo(dto.getTitulo());
-        existing.setDescricao(dto.getDescricao());
-        existing.setDataEntrega(dto.getDataEntrega());
+
+        Turma turma = null;
         if (dto.getTurmaId() != null) {
-            Optional<Turma> turOpt = turmaService.buscarPorId(dto.getTurmaId());
-            turOpt.ifPresent(existing::setTurma);
+            turma = turmaService.buscarPorId(dto.getTurmaId())
+                    .orElseThrow(() -> new IllegalArgumentException("Turma não encontrada"));
         }
-        Tarefa updated = service.salvar(existing);
-        return ResponseEntity.ok(updated);
+
+        Tarefa tarefaAtualizada = TarefaFactory.atualizarTarefa(optTarefa.get(), dto, turma);
+        Tarefa saved = tarefaService.salvar(tarefaAtualizada);
+        return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletar(id);
+        tarefaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

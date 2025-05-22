@@ -1,5 +1,7 @@
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.aspect.Loggable;
+import com.unifor.estuda_facil.factory.MensagemFactory;
 import com.unifor.estuda_facil.models.dto.MensagemDTO;
 import com.unifor.estuda_facil.models.entity.Mensagem;
 import com.unifor.estuda_facil.models.entity.Professor;
@@ -10,7 +12,6 @@ import com.unifor.estuda_facil.repository.ResponsavelRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,19 +21,17 @@ public class MensagemService {
     private final MensagemRepository mensagemRepository;
     private final ProfessorRepository professorRepository;
     private final ResponsavelRepository responsavelRepository;
+    private final MensagemFactory mensagemFactory;
 
+
+    @Loggable
     public void enviarMensagem(MensagemDTO dto) {
         Professor professor = professorRepository.findById(dto.getProfessorId())
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
         Responsavel responsavel = responsavelRepository.findById(dto.getResponsavelId())
                 .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
 
-        Mensagem mensagem = new Mensagem();
-        mensagem.setRemetente(professor);
-        mensagem.setDestinatario(responsavel);
-        mensagem.setConteudo(dto.getConteudo());
-        mensagem.setDataEnvio(LocalDateTime.now());
-        mensagem.setLida(false);
+        Mensagem mensagem = mensagemFactory.criarMensagem(dto, professor, responsavel);
 
         if (dto.getRespostaParaId() != null) {
             mensagemRepository.findById(dto.getRespostaParaId())
@@ -42,13 +41,14 @@ public class MensagemService {
         mensagemRepository.save(mensagem);
     }
 
+    @Loggable
     public List<Mensagem> listarRecebidas(Long responsavelId) {
         Responsavel responsavel = responsavelRepository.findById(responsavelId)
                 .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
 
         return mensagemRepository.findByDestinatarioOrderByDataEnvioDesc(responsavel);
     }
-
+    @Loggable
     public void marcarComoLida(Long id) {
         Mensagem mensagem = mensagemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Mensagem não encontrada"));
@@ -58,14 +58,14 @@ public class MensagemService {
             mensagemRepository.save(mensagem);
         }
     }
-
+    @Loggable
     public long contarNaoLidas(Long responsavelId) {
         if (!responsavelRepository.existsById(responsavelId)) {
             throw new RuntimeException("Responsável não encontrado");
         }
         return mensagemRepository.countByDestinatarioIdAndLidaFalse(responsavelId);
     }
-
+    @Loggable
     public List<Mensagem> obterConversa(Long professorId, Long responsavelId) {
         if (!professorRepository.existsById(professorId)) {
             throw new RuntimeException("Professor não encontrado");
