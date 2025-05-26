@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/admin/**").hasRole("COORDENACAO")
+                        .requestMatchers("/admins/**").hasRole("COORDENACAO")
                         .requestMatchers("/aluno/**").hasRole("COORDENACAO")
                         .requestMatchers("/mensagens/**").hasAnyRole("COORDENACAO", "PROFESSOR", "ALUNO", "RESPONSAVEL")
                         .requestMatchers("/professor/**").hasRole("COORDENACAO")
