@@ -16,4 +16,8 @@ public class Professor {
 
     private String disciplina;
     private String telefone;
+
+    @OneToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 }

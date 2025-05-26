@@ -1,6 +1,8 @@
 package com.unifor.estuda_facil.models.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -17,12 +19,16 @@ public class AlunoDTO {
     private String nome;
 
     private LocalDate dataNascimento;
-
     private String matricula;
 
-    /** ID da turma à qual o aluno pertence */
     private Long turmaId;
-
-    /** Lista de IDs de responsáveis pelo aluno */
     private List<Long> responsavelIds;
+
+    @Email(message = "Email inválido")
+    @NotNull(message = "Email é obrigatório")
+    private String email;
+
+    @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
+    @NotNull(message = "Senha é obrigatória")
+    private String senha;
 }

@@ -7,9 +7,10 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+
 @Entity
 @Table(name = "alunos")
+@Data
 public class Aluno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +27,6 @@ public class Aluno {
     @JsonBackReference
     private Turma turma;
 
-
     @ManyToMany
     @JoinTable(
             name = "aluno_responsavel",
@@ -34,4 +34,8 @@ public class Aluno {
             inverseJoinColumns = @JoinColumn(name = "responsavel_id")
     )
     private List<Responsavel> responsaveis;
+
+    @OneToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 }
