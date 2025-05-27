@@ -2,11 +2,12 @@ package com.unifor.estuda_facil.models.dto;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class MensagemDTO {
-    private Long professorId;
-    private Long responsavelId;
+    private UUID professorId;
+    private UUID responsavelId;
     private String conteudo;
-    private Long respostaParaId;
-
+    private UUID respostaParaId;
 }
