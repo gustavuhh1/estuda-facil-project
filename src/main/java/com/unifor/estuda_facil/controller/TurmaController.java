@@ -33,12 +33,12 @@ class TurmaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Turma> buscar(@PathVariable UUID id) {
+    public ResponseEntity<Turma> buscar(@PathVariable Long id) {
         return service.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Turma> atualizar(@PathVariable UUID id, @RequestBody @Valid TurmaDTO dto) {
+    public ResponseEntity<Turma> atualizar(@PathVariable Long id, @RequestBody @Valid TurmaDTO dto) {
         Turma turma = service.buscarPorId(id).orElse(null);
         if (turma == null) return ResponseEntity.notFound().build();
         turma.setCodigo(dto.getCodigo());
@@ -48,7 +48,7 @@ class TurmaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
