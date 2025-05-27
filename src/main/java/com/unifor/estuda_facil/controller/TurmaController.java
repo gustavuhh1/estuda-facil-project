@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/turma")
@@ -47,6 +48,15 @@ class TurmaController {
         turma.setAnoLetivo(dto.getAnoLetivo());
         return ResponseEntity.ok(service.salvar(turma));
     }
+    @PutMapping("/{turmaId}/professor/{professorId}")
+    public ResponseEntity<Turma> adicionarProfessor(
+            @PathVariable Long turmaId,
+            @PathVariable UUID professorId) {
+
+        Turma turmaAtualizada = service.adicionarProfessor(turmaId, professorId);
+        return ResponseEntity.ok(turmaAtualizada);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
