@@ -5,10 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
-public class AdminDTO {
+public class AdminDTO implements UsuarioResponseDTO{
+
+
+    private UUID id;
     @NotBlank(message = "Nome é obrigatório!")
     private String nome;
+    private String role;
 
     private String departamento;
     private String telefoneContato;

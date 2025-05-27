@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class ProfessorDTO {
+public class ProfessorDTO implements UsuarioResponseDTO{
     private UUID id;
 
     @NotBlank(message = "Nome do professor é obrigatório")
@@ -20,6 +20,7 @@ public class ProfessorDTO {
     @Email(message = "Email inválido")
     @NotBlank(message = "Email é obrigatório")
     private String email;
+    private String Role;
 
     @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
     @NotBlank(message = "Senha é obrigatória")

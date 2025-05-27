@@ -1,8 +1,9 @@
 package com.unifor.estuda_facil.controller;
 
-import com.unifor.estuda_facil.models.dto.AuthRequestDTO;
-import com.unifor.estuda_facil.models.dto.AuthResponseDTO;
-import com.unifor.estuda_facil.models.dto.UsuarioDTO;
+import com.unifor.estuda_facil.models.dto.*;
+import com.unifor.estuda_facil.models.entity.Admin;
+import com.unifor.estuda_facil.models.entity.Aluno;
+import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.Usuario;
 import com.unifor.estuda_facil.service.CustomUserDetailsService;
 import com.unifor.estuda_facil.service.JwtService;
@@ -47,7 +48,43 @@ public class AuthController {
             UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
             String token = jwtService.generateToken(userDetails);
             Usuario user = usuarioService.buscarPorEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-            UsuarioDTO userDTO = new UsuarioDTO(user.getId(), user.getEmail(), user.getRole());
+            System.out.println(user.getRole());
+            UsuarioResponseDTO userDTO;
+
+            if (user instanceof Aluno aluno) {
+                AlunoDTO dto = new AlunoDTO();
+                dto.setId(aluno.getId());
+                dto.setEmail(aluno.getEmail());
+                dto.setRole(String.valueOf(aluno.getRole()));
+                dto.setNome(aluno.getNome());
+                dto.setMatricula(aluno.getMatricula());
+                dto.setTurmaId(aluno.getTurma() != null ? aluno.getTurma().getId() : null);
+                userDTO = dto;
+
+            } else if (user instanceof Professor prof) {
+                ProfessorDTO dto = new ProfessorDTO();
+                dto.setId(prof.getId());
+                dto.setEmail(prof.getEmail());
+                dto.setRole(String.valueOf(prof.getRole()));
+                dto.setNome(prof.getNome());
+                dto.setDisciplina(prof.getDisciplina());
+                dto.setTelefoneContato(prof.getTelefone());
+                userDTO = dto;
+
+            } else if (user instanceof Admin admin) {
+                AdminDTO dto = new AdminDTO();
+                dto.setId(admin.getId());
+                dto.setEmail(admin.getEmail());
+                dto.setRole(String.valueOf(admin.getRole()));
+                dto.setNome(admin.getNome());
+                dto.setDepartamento(admin.getDepartamento());
+                dto.setTelefoneContato(admin.getTelefoneContato());
+                userDTO = dto;
+
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Tipo de usuário desconhecido");
+            }
+
             return ResponseEntity.ok(new AuthResponseDTO(token, userDTO));
         } catch (BadCredentialsException e) {
             return ResponseEntity

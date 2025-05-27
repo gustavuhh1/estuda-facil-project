@@ -23,7 +23,7 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<Aluno> criar(@RequestBody @Valid AlunoDTO dto) {
+    public ResponseEntity<Aluno> criar(@RequestBody @Valid AlunoResponseDTO dto) {
         Aluno a = service.criarAluno(dto);
         return ResponseEntity.status(201).body(a);
     }

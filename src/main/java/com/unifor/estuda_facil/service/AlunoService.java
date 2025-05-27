@@ -2,11 +2,13 @@ package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.dto.AlunoDTO;
+import com.unifor.estuda_facil.models.dto.AlunoResponseDTO;
 import com.unifor.estuda_facil.models.entity.*;
 import com.unifor.estuda_facil.models.entity.enums.Role;
 import com.unifor.estuda_facil.repository.AlunoRepository;
 import com.unifor.estuda_facil.repository.ResponsavelRepository;
 import com.unifor.estuda_facil.repository.TurmaRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,7 @@ public class AlunoService {
     private final ResponsavelRepository responsavelRepository;
 
     @Loggable
-    public Aluno criarAluno(AlunoDTO dto) {
+    public Aluno criarAluno(@Valid AlunoResponseDTO dto) {
         Aluno aluno = new Aluno();
         aluno.setNome(dto.getNome());
         aluno.setDataNascimento(dto.getDataNascimento());

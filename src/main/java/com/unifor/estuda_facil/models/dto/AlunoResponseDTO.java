@@ -18,6 +18,7 @@ public class AlunoResponseDTO {
     private Long turmaId;
     private List<UUID> responsavelIds;
     private String email;
+    private String senha;
 
     public AlunoResponseDTO(Aluno aluno) {
         this.id = aluno.getId();

@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -17,7 +16,6 @@ public class Admin extends Usuario{
 
     @Column(nullable = false)
     private String nome;
-
     private String departamento;
     private String telefoneContato;
 }
