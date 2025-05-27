@@ -21,12 +21,14 @@ public class LoggingAspect {
 
     @AfterReturning(pointcut = "execution(* com.unifor.estuda_facil.service..*(..))", returning = "result")
     public void logAfter(JoinPoint joinPoint, Object result) {
-        System.out.println("✅ [LOG] Finalizado: " + joinPoint.getSignature().getName() + ", retornou: " + result);
+        System.out.println("✅ [LOG] Finalizado: " +
+                joinPoint.getSignature().getName() + ", retornou: " + result);
     }
 
     @AfterThrowing(pointcut = "execution(* com.unifor.estuda_facil.service..*(..))", throwing = "ex")
     public void logError(JoinPoint joinPoint, Throwable ex) {
-        System.out.println("❌ [LOG] Erro em: " + joinPoint.getSignature().getName() + " - Mensagem: " + ex.getMessage());
+        System.out.println("❌ [LOG] Erro em: " +
+                joinPoint.getSignature().getName() + " - Mensagem: " + ex.getMessage());
     }
     // Aplica o aspecto para todos os métodos em pacotes de serviços
     @Around("execution(* com.unifor.estuda_facil.service..*(..))")
