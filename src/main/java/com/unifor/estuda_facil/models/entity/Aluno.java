@@ -2,19 +2,23 @@ package com.unifor.estuda_facil.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 @Entity
 @Table(name = "alunos")
-@Data
-public class Aluno {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@AllArgsConstructor
+@NoArgsConstructor
+public class Aluno extends Usuario{
 
     @Column(nullable = false)
     private String nome;
@@ -34,8 +38,4 @@ public class Aluno {
             inverseJoinColumns = @JoinColumn(name = "responsavel_id")
     )
     private List<Responsavel> responsaveis;
-
-    @OneToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
 }

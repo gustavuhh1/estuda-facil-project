@@ -1,7 +1,6 @@
 package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
-import com.unifor.estuda_facil.factory.UsuarioFactory;
 import com.unifor.estuda_facil.models.dto.AdminDTO;
 import com.unifor.estuda_facil.models.entity.Admin;
 import com.unifor.estuda_facil.models.entity.Usuario;
@@ -18,19 +17,18 @@ import java.util.UUID;
 public class AdminService {
 
     private final AdminRepository adminRepository;
-    private final UsuarioFactory usuarioFactory;
 
     @Loggable
     public Admin criarAdmin(AdminDTO dto) {
-        // Cria o usuário via Factory
-        Usuario usuario = usuarioFactory.criar(dto.getEmail(), dto.getSenha(), Role.COORDENACAO);
 
-        // Cria o admin e vincula o usuário
+        // Cria o admin
         Admin admin = new Admin();
         admin.setNome(dto.getNome());
         admin.setDepartamento(dto.getDepartamento());
         admin.setTelefoneContato(dto.getTelefoneContato());
-        admin.setUsuario(usuario);
+        admin.setEmail(dto.getEmail());
+        admin.setSenha(dto.getSenha());
+        admin.setRole(Role.COORDENACAO);
 
         return adminRepository.save(admin);
     }
@@ -51,6 +49,8 @@ public class AdminService {
         adminExistente.setNome(dto.getNome());
         adminExistente.setDepartamento(dto.getDepartamento());
         adminExistente.setTelefoneContato(dto.getTelefoneContato());
+        adminExistente.setEmail(dto.getEmail());
+        adminExistente.setSenha(dto.getSenha());
         return adminRepository.save(adminExistente);
     }
 

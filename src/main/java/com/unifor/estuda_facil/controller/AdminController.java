@@ -18,8 +18,8 @@ import java.util.UUID;
 @RequestMapping("/admins")
 public class AdminController {
 
-    @Autowired private AdminService adminService;
-    @Autowired private UsuarioRepository usuarioRepository;
+    @Autowired
+    private AdminService adminService;
 
     @PostMapping
     public ResponseEntity<Admin> criarAdmin(@RequestBody @Valid AdminDTO dto) {
@@ -64,7 +64,6 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
         adminService.deletarAdmin(id);
-        usuarioRepository.deleteById(adm.getUsuario().getId());
         return ResponseEntity.noContent().build();
     }
 }

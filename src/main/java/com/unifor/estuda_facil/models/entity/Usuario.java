@@ -13,8 +13,8 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "usuarios")
-public class Usuario implements UserDetails {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

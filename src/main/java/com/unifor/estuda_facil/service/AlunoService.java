@@ -1,7 +1,6 @@
 package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
-import com.unifor.estuda_facil.factory.UsuarioFactory;
 import com.unifor.estuda_facil.models.dto.AlunoDTO;
 import com.unifor.estuda_facil.models.entity.*;
 import com.unifor.estuda_facil.models.entity.enums.Role;
@@ -12,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +21,6 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final TurmaRepository turmaRepository;
     private final ResponsavelRepository responsavelRepository;
-    private final UsuarioFactory usuarioFactory;
 
     @Loggable
     public Aluno criarAluno(AlunoDTO dto) {
@@ -29,10 +28,9 @@ public class AlunoService {
         aluno.setNome(dto.getNome());
         aluno.setDataNascimento(dto.getDataNascimento());
         aluno.setMatricula(dto.getMatricula());
-
-        // Cria e associa o usuário
-        Usuario usuario = usuarioFactory.criar(dto.getEmail(), dto.getSenha(), Role.ALUNO);
-        aluno.setUsuario(usuario);
+        aluno.setEmail(dto.getEmail());
+        aluno.setSenha(dto.getSenha());
+        aluno.setRole(Role.ALUNO);
 
         // Associa turma (se informada)
         buscarTurma(dto.getTurmaId()).ifPresent(aluno::setTurma);
@@ -50,13 +48,13 @@ public class AlunoService {
         return alunoRepository.findAll();
     }
 
-    public Aluno buscarPorId(Long id) {
+    public Aluno buscarPorId(UUID id) {
         return alunoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado"));
     }
 
     @Loggable
-    public Aluno atualizarAluno(Long id, AlunoDTO dto) {
+    public Aluno atualizarAluno(UUID id, AlunoDTO dto) {
         Aluno aluno = buscarPorId(id);
         aluno.setNome(dto.getNome());
         aluno.setDataNascimento(dto.getDataNascimento());
@@ -68,11 +66,11 @@ public class AlunoService {
     }
 
     @Loggable
-    public void deletarAluno(Long id) {
+    public void deletarAluno(UUID id) {
         alunoRepository.deleteById(id);
     }
 
-    public void atribuirTurma(Long alunoId, Long turmaId) {
+    public void atribuirTurma(UUID alunoId, Long turmaId) {
         Aluno aluno = buscarPorId(alunoId);
         Turma turma = turmaRepository.findById(turmaId)
                 .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
@@ -82,7 +80,7 @@ public class AlunoService {
 
     // 🔽 Métodos auxiliares clean 🔽
 
-    private List<Responsavel> buscarResponsaveis(List<Long> ids) {
+    private List<Responsavel> buscarResponsaveis(List<UUID> ids) {
         return ids.stream()
                 .map(id -> responsavelRepository.findById(id)
                         .orElseThrow(() -> new IllegalArgumentException("Responsável não encontrado: " + id)))

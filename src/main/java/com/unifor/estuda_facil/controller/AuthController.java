@@ -46,9 +46,9 @@ public class AuthController {
             );
             UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
             String token = jwtService.generateToken(userDetails);
-            Usuario usuario = usuarioService.buscarPorEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getId(), usuario.getEmail(), usuario.getRole());
-            return ResponseEntity.ok(new AuthResponseDTO(token, usuarioDTO));
+            Usuario user = usuarioService.buscarPorEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+            UsuarioDTO userDTO = new UsuarioDTO(user.getId(), user.getEmail(), user.getRole());
+            return ResponseEntity.ok(new AuthResponseDTO(token, userDTO));
         } catch (BadCredentialsException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
