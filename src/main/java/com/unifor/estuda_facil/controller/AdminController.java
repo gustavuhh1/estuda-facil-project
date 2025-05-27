@@ -3,10 +3,8 @@ package com.unifor.estuda_facil.controller;
 import com.unifor.estuda_facil.exception.EmailAlreadyExists;
 import com.unifor.estuda_facil.models.dto.AdminDTO;
 import com.unifor.estuda_facil.models.entity.Admin;
-import com.unifor.estuda_facil.repository.UsuarioRepository;
 import com.unifor.estuda_facil.service.AdminService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +16,12 @@ import java.util.UUID;
 @RequestMapping("/admins")
 public class AdminController {
 
-    @Autowired private AdminService adminService;
-    @Autowired private UsuarioRepository usuarioRepository;
+
+    private final AdminService adminService;
+
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     @PostMapping
     public ResponseEntity<Admin> criarAdmin(@RequestBody @Valid AdminDTO dto) {
@@ -64,7 +66,6 @@ public class AdminController {
             return ResponseEntity.notFound().build();
         }
         adminService.deletarAdmin(id);
-        usuarioRepository.deleteById(adm.getUsuario().getId());
         return ResponseEntity.noContent().build();
     }
 }

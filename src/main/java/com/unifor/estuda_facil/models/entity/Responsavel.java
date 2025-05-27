@@ -1,16 +1,21 @@
 package com.unifor.estuda_facil.models.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "responsaveis")
-public class Responsavel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+public class Responsavel extends Usuario{
+
 
     @Column(nullable = false)
     private String nome;

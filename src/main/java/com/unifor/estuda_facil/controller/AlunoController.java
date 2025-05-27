@@ -1,6 +1,7 @@
 package com.unifor.estuda_facil.controller;
 
 import com.unifor.estuda_facil.models.dto.AlunoDTO;
+import com.unifor.estuda_facil.models.dto.AlunoResponseDTO;
 import com.unifor.estuda_facil.models.entity.Aluno;
 import com.unifor.estuda_facil.service.AlunoService;
 import jakarta.validation.Valid;
@@ -8,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/aluno")
@@ -20,13 +23,13 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<Aluno> criar(@RequestBody @Valid AlunoDTO dto) {
+    public ResponseEntity<Aluno> criar(@RequestBody @Valid AlunoResponseDTO dto) {
         Aluno a = service.criarAluno(dto);
         return ResponseEntity.status(201).body(a);
     }
 
     @PutMapping("/{alunoId}/turma/{turmaId}")
-    public ResponseEntity<String> atribuirTurma(@PathVariable Long alunoId, @PathVariable Long turmaId) {
+    public ResponseEntity<String> atribuirTurma(@PathVariable UUID alunoId, @PathVariable Long turmaId) {
         service.atribuirTurma(alunoId, turmaId);
         return ResponseEntity.ok("Turma atribuída ao aluno com sucesso!");
     }
@@ -34,12 +37,16 @@ public class AlunoController {
 
 
     @GetMapping
-    public ResponseEntity<List<Aluno>> listar() {
-        return ResponseEntity.ok(service.listarAlunos());
+    public ResponseEntity<List<AlunoResponseDTO>> listar() {
+        List<AlunoResponseDTO> dtos = service.listarAlunos()
+                .stream()
+                .map(AlunoResponseDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Aluno> buscar(@PathVariable Long id) {
+    public ResponseEntity<Aluno> buscar(@PathVariable UUID id) {
         Aluno a = service.buscarPorId(id);
         if (a == null) {
             return ResponseEntity.notFound().build();
@@ -49,7 +56,7 @@ public class AlunoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Aluno> atualizar(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @RequestBody @Valid AlunoDTO dto
     ) {
         Aluno updated = service.atualizarAluno(id, dto);
@@ -60,7 +67,7 @@ public class AlunoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
         service.deletarAluno(id);
         return ResponseEntity.noContent().build();
     }

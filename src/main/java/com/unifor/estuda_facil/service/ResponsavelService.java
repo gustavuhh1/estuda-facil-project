@@ -8,18 +8,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ResponsavelService {
 
     private final ResponsavelRepository responsavelRepository;
+    private final UsuarioService usuarioService;
+
     @Loggable
     public Responsavel criarResponsavel(ResponsavelDTO dto) {
         Responsavel responsavel = new Responsavel();
         responsavel.setNome(dto.getNome());
         responsavel.setTelefone(dto.getTelefone());
         responsavel.setCpf(dto.getCpf());
+
+        usuarioService.prepararUsuario(responsavel);
+
         return responsavelRepository.save(responsavel);
     }
     @Loggable
@@ -27,12 +33,12 @@ public class ResponsavelService {
         return responsavelRepository.findAll();
     }
 
-    public Responsavel buscarPorId(Long id) {
+    public Responsavel buscarPorId(UUID id) {
         return responsavelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Responsável não encontrado"));
     }
     @Loggable
-    public Responsavel atualizar(Long id, ResponsavelDTO dto) {
+    public Responsavel atualizar(UUID id, ResponsavelDTO dto) {
         Responsavel r = buscarPorId(id);
         r.setNome(dto.getNome());
         r.setTelefone(dto.getTelefone());
@@ -40,7 +46,7 @@ public class ResponsavelService {
         return responsavelRepository.save(r);
     }
     @Loggable
-    public void deletar(Long id) {
+    public void deletar(UUID id) {
         responsavelRepository.deleteById(id);
     }
 }

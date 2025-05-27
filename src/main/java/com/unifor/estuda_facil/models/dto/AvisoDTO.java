@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+
+
 @Data
 public class AvisoDTO {
     private Long id;
@@ -16,3 +18,4 @@ public class AvisoDTO {
     private LocalDateTime dataCriacao;
     private Long turmaId;
 }
+

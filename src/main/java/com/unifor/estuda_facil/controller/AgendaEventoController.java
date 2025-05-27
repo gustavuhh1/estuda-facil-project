@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/agenda")
@@ -30,11 +31,11 @@ public class AgendaEventoController {
     }
 
     @GetMapping("/professor/{professorId}")
-    public ResponseEntity<List<AgendaEvento>> listarPorProfessor(@PathVariable Long professorId) {
+    public ResponseEntity<List<AgendaEvento>> listarPorProfessor(@PathVariable UUID professorId) {
         return ResponseEntity.ok(agendaEventoService.listarPorProfessor(professorId));
     }
     @GetMapping("/aluno/{alunoId}")
-    public ResponseEntity<List<AgendaEvento>> listarAgendaDoAluno(@PathVariable Long alunoId, @RequestParam Long turmaId) {
+    public ResponseEntity<List<AgendaEvento>> listarAgendaDoAluno(@PathVariable UUID alunoId, @RequestParam Long turmaId) {
         List<AgendaEvento> eventos = agendaEventoService.listarAgendaDoAluno(alunoId, turmaId);
         return ResponseEntity.ok(eventos);
     }

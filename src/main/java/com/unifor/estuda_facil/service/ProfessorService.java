@@ -1,48 +1,55 @@
-// src/main/java/com/unifor/estuda_facil/service/ProfessorService.java
 package com.unifor.estuda_facil.service;
 
-import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.dto.ProfessorDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
+import com.unifor.estuda_facil.models.entity.enums.Role;
 import com.unifor.estuda_facil.repository.ProfessorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ProfessorService {
 
     private final ProfessorRepository professorRepository;
+    private final UsuarioService usuarioService;
 
-    @Loggable
     public Professor criarProfessor(ProfessorDTO dto) {
+
         Professor p = new Professor();
         p.setNome(dto.getNome());
         p.setDisciplina(dto.getDisciplina());
-        p.setTelefone(dto.getTelefone());
+        p.setTelefone(dto.getTelefoneContato());
+        p.setEmail(dto.getEmail());
+        p.setSenha(dto.getSenha());
+        p.setRole(Role.PROFESSOR);
+
+        usuarioService.prepararUsuario(p);
+
         return professorRepository.save(p);
     }
-    @Loggable
+
     public List<Professor> listarProfessores() {
         return professorRepository.findAll();
     }
 
-    public Professor buscarPorId(Long id) {
+    public Professor buscarPorId(UUID id) {
         return professorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Professor não encontrado"));
     }
-    @Loggable
-    public Professor atualizarProfessor(Long id, ProfessorDTO dto) {
+
+    public Professor atualizarProfessor(UUID id, ProfessorDTO dto) {
         Professor p = buscarPorId(id);
         p.setNome(dto.getNome());
         p.setDisciplina(dto.getDisciplina());
-        p.setTelefone(dto.getTelefone());
+        p.setTelefone(dto.getTelefoneContato());
         return professorRepository.save(p);
     }
-    @Loggable
-    public void deletarProfessor(Long id) {
+
+    public void deletarProfessor(UUID id) {
         professorRepository.deleteById(id);
     }
 }

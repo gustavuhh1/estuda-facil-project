@@ -1,74 +1,57 @@
 package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
-import com.unifor.estuda_facil.exception.EmailAlreadyExists;
 import com.unifor.estuda_facil.models.dto.AdminDTO;
 import com.unifor.estuda_facil.models.entity.Admin;
-import com.unifor.estuda_facil.models.entity.Usuario;
 import com.unifor.estuda_facil.models.entity.enums.Role;
 import com.unifor.estuda_facil.repository.AdminRepository;
-import com.unifor.estuda_facil.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
 
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    private final AdminRepository adminRepository;
+    private final UsuarioService usuarioService;
 
     @Loggable
-    public Admin criarAdmin(AdminDTO adminDTO) {
-
-        // validar se e-mail já existe
-        Optional<Usuario> usuarioExists = usuarioRepository.findByEmail(adminDTO.getEmail());
-        if(usuarioExists.isPresent()) {
-            throw new EmailAlreadyExists("E-mail já existente");
-        };
-
+    public Admin criarAdmin(AdminDTO dto) {
         Admin admin = new Admin();
-        admin.setNome(adminDTO.getNome());
-        admin.setDepartamento(admin.getDepartamento());
-        admin.setTelefoneContato(adminDTO.getTelefoneContato());
+        admin.setNome(dto.getNome());
+        admin.setDepartamento(dto.getDepartamento());
+        admin.setTelefoneContato(dto.getTelefoneContato());
+        admin.setEmail(dto.getEmail());
+        admin.setSenha(dto.getSenha());
+        admin.setRole(Role.COORDENACAO);
 
-
-        Usuario usuario = new Usuario();
-        usuario.setEmail(adminDTO.getEmail());
-        usuario.setSenha(passwordEncoder.encode(adminDTO.getSenha()));
-        usuario.setRole(Role.COORDENACAO);
-        usuario = usuarioRepository.save(usuario);
-
-        admin.setUsuario(usuario);
+        // Aplica regras comuns (criptografar senha, etc.)
+        usuarioService.prepararUsuario(admin);
 
         return adminRepository.save(admin);
     }
+
     @Loggable
     public List<Admin> listarAdmins() {
         return adminRepository.findAll();
     }
 
     public Admin buscarPorId(UUID id) {
-        return adminRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Admin não encontrado!"));
+        return adminRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Admin não encontrado!"));
     }
-    @Loggable
-    public Admin atualizarAdmin(UUID id, AdminDTO adminAtualizado) {
-        Admin adminExistente = buscarPorId(id);
-        adminExistente.setNome(adminAtualizado.getNome());
-        adminExistente.setDepartamento(adminAtualizado.getDepartamento());
-        adminExistente.setTelefoneContato(adminAtualizado.getTelefoneContato());
 
+    @Loggable
+    public Admin atualizarAdmin(UUID id, AdminDTO dto) {
+        Admin adminExistente = buscarPorId(id);
+        adminExistente.setNome(dto.getNome());
+        adminExistente.setDepartamento(dto.getDepartamento());
+        adminExistente.setTelefoneContato(dto.getTelefoneContato());
+        adminExistente.setEmail(dto.getEmail());
+        adminExistente.setSenha(dto.getSenha());
         return adminRepository.save(adminExistente);
     }
 

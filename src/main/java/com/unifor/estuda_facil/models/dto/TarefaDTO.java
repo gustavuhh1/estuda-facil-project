@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+
 @Data
 public class TarefaDTO {
     private Long id;
@@ -18,8 +19,6 @@ public class TarefaDTO {
     @NotNull(message = "Data de entrega é obrigatória")
     private LocalDate dataEntrega;
 
-
     private Long turmaId;
-
-
 }
+

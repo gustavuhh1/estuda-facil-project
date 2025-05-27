@@ -1,28 +1,23 @@
 package com.unifor.estuda_facil.models.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.UUID;
 
 /**
  * Data Transfer Object for Aluno entity.
  */
 @Data
-public class AlunoDTO {
-    private Long id;
+public class AlunoDTO implements UsuarioResponseDTO{
+    private UUID id;
 
-    @NotNull(message = "Nome do aluno é obrigatório")
+    @Email
+    private String email;
+    private String role;
     private String nome;
-
     private LocalDate dataNascimento;
-
     private String matricula;
-
-    /** ID da turma à qual o aluno pertence */
     private Long turmaId;
-
-    /** Lista de IDs de responsáveis pelo aluno */
-    private List<Long> responsavelIds;
 }

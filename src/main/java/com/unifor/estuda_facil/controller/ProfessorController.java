@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/professor")
@@ -31,7 +32,7 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Professor> buscar(@PathVariable Long id) {
+    public ResponseEntity<Professor> buscar(@PathVariable UUID id) {
         Professor p = service.buscarPorId(id);
         if (p == null) {
             return ResponseEntity.notFound().build();
@@ -41,7 +42,7 @@ public class ProfessorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Professor> atualizar(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @RequestBody @Valid ProfessorDTO dto
     ) {
         Professor updated = service.atualizarProfessor(id, dto);
@@ -52,7 +53,7 @@ public class ProfessorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
         service.deletarProfessor(id);
         return ResponseEntity.noContent().build();
     }
