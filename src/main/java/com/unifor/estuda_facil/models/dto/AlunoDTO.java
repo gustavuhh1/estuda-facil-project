@@ -8,12 +8,11 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Data Transfer Object for Aluno entity.
- */
+import java.util.UUID;
+
 @Data
 public class AlunoDTO {
-    private Long id;
+    private UUID id;
 
     @NotNull(message = "Nome do aluno é obrigatório")
     private String nome;
@@ -21,8 +20,8 @@ public class AlunoDTO {
     private LocalDate dataNascimento;
     private String matricula;
 
-    private Long turmaId;
-    private List<Long> responsavelIds;
+    private UUID turmaId;
+    private List<UUID> responsavelIds;
 
     @Email(message = "Email inválido")
     @NotNull(message = "Email é obrigatório")

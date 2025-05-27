@@ -12,14 +12,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import com.unifor.estuda_facil.models.dto.*;
+import com.unifor.estuda_facil.models.entity.*;
+import com.unifor.estuda_facil.service.*;
+import com.unifor.estuda_facil.factory.TarefaFactory;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.*;
+
 
 @RestController
 @RequestMapping("/aviso")
-public class AvisoController {
-
+class AvisoController {
     private final AvisoService service;
     private final TurmaService turmaService;
-
     public AvisoController(AvisoService service, TurmaService turmaService) {
         this.service = service;
         this.turmaService = turmaService;
@@ -30,72 +42,42 @@ public class AvisoController {
         Aviso a = new Aviso();
         a.setTitulo(dto.getTitulo());
         a.setDescricao(dto.getDescricao());
-
-        if (dto.getDataCriacao() != null) {
-            a.setDataCriacao(dto.getDataCriacao());
-        } else {
-            a.setDataCriacao(LocalDateTime.now());
-        }
-
+        a.setDataCriacao(Optional.ofNullable(dto.getDataCriacao()).orElse(LocalDateTime.now()));
         if (dto.getTurmaId() != null) {
-            Optional<Turma> turOpt = turmaService.buscarPorId(dto.getTurmaId());
-            turOpt.ifPresent(a::setTurma);
+            turmaService.buscarPorId(dto.getTurmaId()).ifPresent(a::setTurma);
         }
-
-        Aviso saved = service.salvar(a);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(a));
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<Aviso> buscar(@PathVariable Long id) {
-        Optional<Aviso> aOpt = service.buscarPorId(id);
-        if (aOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(aOpt.get());
+    public ResponseEntity<Aviso> buscar(@PathVariable UUID id) {
+        return service.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping
-    public ResponseEntity<?> listarPorTurma(@RequestParam(required = false) Long turmaId) {
-        if (turmaId != null) {
-            return ResponseEntity.ok(service.listarPorTurmaOuGerais(turmaId));
-        } else {
-            return ResponseEntity.ok(service.listarTodosOrdenado());
-        }
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody @Valid AvisoDTO dto) {
-        Optional<Aviso> avisoOpt = service.buscarPorId(id);
-        if (avisoOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
 
+    @GetMapping
+    public ResponseEntity<?> listarPorTurma(@RequestParam(required = false) UUID turmaId) {
+        return turmaId != null ? ResponseEntity.ok(service.listarPorTurmaOuGerais(turmaId)) : ResponseEntity.ok(service.listarTodosOrdenado());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable UUID id, @RequestBody @Valid AvisoDTO dto) {
+        Optional<Aviso> avisoOpt = service.buscarPorId(id);
+        if (avisoOpt.isEmpty()) return ResponseEntity.notFound().build();
         Aviso aviso = avisoOpt.get();
         aviso.setTitulo(dto.getTitulo());
         aviso.setDescricao(dto.getDescricao());
-
-        // Atualiza a data se for passada (senão mantém)
-        if (dto.getDataCriacao() != null) {
-            aviso.setDataCriacao(dto.getDataCriacao());
-        }
-
-        // Atualiza a turma se passada
+        aviso.setDataCriacao(Optional.ofNullable(dto.getDataCriacao()).orElse(aviso.getDataCriacao()));
+        aviso.setTurma(null);
         if (dto.getTurmaId() != null) {
-            Optional<Turma> turmaOpt = turmaService.buscarPorId(dto.getTurmaId());
-            turmaOpt.ifPresent(aviso::setTurma);
-        } else {
-            aviso.setTurma(null); // aviso geral
+            turmaService.buscarPorId(dto.getTurmaId()).ifPresent(aviso::setTurma);
         }
-
-        Aviso atualizado = service.salvar(aviso);
-        return ResponseEntity.ok(atualizado);
+        return ResponseEntity.ok(service.salvar(aviso));
     }
-
-
 }
+

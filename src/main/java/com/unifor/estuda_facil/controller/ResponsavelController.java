@@ -8,13 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/responsaveis")
-public class ResponsavelController {
-
+class ResponsavelController {
     private final ResponsavelService service;
-
     public ResponsavelController(ResponsavelService service) {
         this.service = service;
     }
@@ -30,17 +29,17 @@ public class ResponsavelController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Responsavel> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Responsavel> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Responsavel> atualizar(@PathVariable Long id, @RequestBody @Valid ResponsavelDTO dto) {
+    public ResponseEntity<Responsavel> atualizar(@PathVariable UUID id, @RequestBody @Valid ResponsavelDTO dto) {
         return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }

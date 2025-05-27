@@ -4,6 +4,7 @@ import com.unifor.estuda_facil.models.entity.enums.TipoEvento;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -12,8 +13,8 @@ import java.time.LocalDate;
 public class AgendaEvento {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String titulo;
 

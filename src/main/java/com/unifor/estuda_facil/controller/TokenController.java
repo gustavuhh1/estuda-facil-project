@@ -10,30 +10,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/token")
-public class TokenController {
-
+class TokenController {
     private final TokenService service;
-
     public TokenController(TokenService service) {
         this.service = service;
     }
 
     @PostMapping("/gerar")
-    public ResponseEntity<TokenResponseDTO> gerarToken(
-            @RequestBody @Valid TokenRequestDTO req
-    ) {
-        TokenResponseDTO resp = service.generate(req);
-        return ResponseEntity.ok(resp);
+    public ResponseEntity<TokenResponseDTO> gerarToken(@RequestBody @Valid TokenRequestDTO req) {
+        return ResponseEntity.ok(service.generate(req));
     }
 
     @PostMapping("/validar")
-    public ResponseEntity<Void> validarToken(
-            @RequestBody @Valid TokenValidationDTO req
-    ) {
-        boolean ok = service.validate(req);
-        if (ok) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(401).build();
+    public ResponseEntity<Void> validarToken(@RequestBody @Valid TokenValidationDTO req) {
+        return service.validate(req) ? ResponseEntity.ok().build() : ResponseEntity.status(401).build();
     }
 }

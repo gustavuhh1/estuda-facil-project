@@ -8,13 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/turma")
-public class TurmaController {
-
+class TurmaController {
     private final TurmaService service;
-
     public TurmaController(TurmaService service) {
         this.service = service;
     }
@@ -25,8 +24,7 @@ public class TurmaController {
         t.setCodigo(dto.getCodigo());
         t.setNome(dto.getNome());
         t.setAnoLetivo(dto.getAnoLetivo());
-        Turma saved = service.salvar(t);
-        return ResponseEntity.status(201).body(saved);
+        return ResponseEntity.status(201).body(service.salvar(t));
     }
 
     @GetMapping
@@ -35,31 +33,22 @@ public class TurmaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Turma> buscar(@PathVariable Long id) {
-        Turma t = service.buscarPorId(id).orElse(null);
-        if (t == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(t);
+    public ResponseEntity<Turma> buscar(@PathVariable UUID id) {
+        return service.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Turma> atualizar(
-            @PathVariable Long id,
-            @RequestBody @Valid TurmaDTO dto
-    ) {
-        Turma t = service.buscarPorId(id).orElse(null);
-        if (t == null) {
-            return ResponseEntity.notFound().build();
-        }
-        t.setCodigo(dto.getCodigo());
-        t.setNome(dto.getNome());
-        t.setAnoLetivo(dto.getAnoLetivo());
-        return ResponseEntity.ok(service.salvar(t));
+    public ResponseEntity<Turma> atualizar(@PathVariable UUID id, @RequestBody @Valid TurmaDTO dto) {
+        Turma turma = service.buscarPorId(id).orElse(null);
+        if (turma == null) return ResponseEntity.notFound().build();
+        turma.setCodigo(dto.getCodigo());
+        turma.setNome(dto.getNome());
+        turma.setAnoLetivo(dto.getAnoLetivo());
+        return ResponseEntity.ok(service.salvar(turma));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }

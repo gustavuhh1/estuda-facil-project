@@ -6,12 +6,14 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+import java.util.UUID;
+
 @Data
 public class AgendaEventoDTO {
     private String titulo;
     private String descricao;
     private LocalDate dataEvento;
     private TipoEvento tipo;
-    private Long turmaId;
-    private Long professorId;
+    private UUID turmaId;
+    private UUID professorId;
 }

@@ -5,14 +5,17 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import java.util.UUID;
+
 @Data
 public class AvisoDTO {
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "Título do aviso é obrigatório")
     private String titulo;
 
     private String descricao;
     private LocalDateTime dataCriacao;
-    private Long turmaId;
+    private UUID turmaId;
 }
+

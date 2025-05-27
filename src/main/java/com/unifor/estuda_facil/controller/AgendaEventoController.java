@@ -7,49 +7,46 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/agenda")
-public class AgendaEventoController {
-
-    private final AgendaEventoService agendaEventoService;
-
-    public AgendaEventoController(AgendaEventoService agendaEventoService) {
-        this.agendaEventoService = agendaEventoService;
+class AgendaEventoController {
+    private final AgendaEventoService service;
+    public AgendaEventoController(AgendaEventoService service) {
+        this.service = service;
     }
 
     @PostMapping
     public ResponseEntity<String> criarEvento(@RequestBody AgendaEventoDTO dto) {
-        agendaEventoService.criarEvento(dto);
+        service.criarEvento(dto);
         return ResponseEntity.ok("Evento criado com sucesso.");
     }
 
     @GetMapping
-    public ResponseEntity<List<AgendaEvento>> listarPorTurma(@RequestParam Long turmaId) {
-        return ResponseEntity.ok(agendaEventoService.listarPorTurma(turmaId));
+    public ResponseEntity<List<AgendaEvento>> listarPorTurma(@RequestParam UUID turmaId) {
+        return ResponseEntity.ok(service.listarPorTurma(turmaId));
     }
 
     @GetMapping("/professor/{professorId}")
-    public ResponseEntity<List<AgendaEvento>> listarPorProfessor(@PathVariable Long professorId) {
-        return ResponseEntity.ok(agendaEventoService.listarPorProfessor(professorId));
-    }
-    @GetMapping("/aluno/{alunoId}")
-    public ResponseEntity<List<AgendaEvento>> listarAgendaDoAluno(@PathVariable Long alunoId, @RequestParam Long turmaId) {
-        List<AgendaEvento> eventos = agendaEventoService.listarAgendaDoAluno(alunoId, turmaId);
-        return ResponseEntity.ok(eventos);
+    public ResponseEntity<List<AgendaEvento>> listarPorProfessor(@PathVariable UUID professorId) {
+        return ResponseEntity.ok(service.listarPorProfessor(professorId));
     }
 
+    @GetMapping("/aluno/{alunoId}")
+    public ResponseEntity<List<AgendaEvento>> listarAgendaDoAluno(@PathVariable UUID alunoId, @RequestParam UUID turmaId) {
+        return ResponseEntity.ok(service.listarAgendaDoAluno(alunoId, turmaId));
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> editarEvento(@PathVariable Long id, @RequestBody AgendaEventoDTO dto) {
-        agendaEventoService.editarEvento(id, dto);
+    public ResponseEntity<String> editarEvento(@PathVariable UUID id, @RequestBody AgendaEventoDTO dto) {
+        service.editarEvento(id, dto);
         return ResponseEntity.ok("Evento atualizado com sucesso.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarEvento(@PathVariable Long id) {
-        agendaEventoService.deletarEvento(id);
+    public ResponseEntity<String> deletarEvento(@PathVariable UUID id) {
+        service.deletarEvento(id);
         return ResponseEntity.ok("Evento deletado com sucesso.");
     }
-
 }

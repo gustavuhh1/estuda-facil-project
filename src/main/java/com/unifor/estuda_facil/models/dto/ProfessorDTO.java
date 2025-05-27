@@ -5,9 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class ProfessorDTO {
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "Nome do professor é obrigatório")
     private String nome;

@@ -3,9 +3,11 @@ package com.unifor.estuda_facil.models.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class TurmaDTO {
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "Código da turma é obrigatório")
     private String codigo;
@@ -15,3 +17,4 @@ public class TurmaDTO {
 
     private String anoLetivo;
 }
+
