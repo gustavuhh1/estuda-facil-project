@@ -11,36 +11,40 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/mensagens")
-class MensagemController {
-    private final MensagemService service;
-    public MensagemController(MensagemService service) {
-        this.service = service;
+public class MensagemController {
+
+    private final MensagemService mensagemService;
+
+    public MensagemController(MensagemService mensagemService) {
+        this.mensagemService = mensagemService;
     }
 
     @PostMapping
     public ResponseEntity<String> enviarMensagem(@RequestBody MensagemDTO dto) {
-        service.enviarMensagem(dto);
+        mensagemService.enviarMensagem(dto);
         return ResponseEntity.ok("Mensagem enviada com sucesso.");
     }
 
     @GetMapping("/recebidas")
-    public ResponseEntity<List<Mensagem>> listarRecebidas(@RequestParam UUID responsavelId) {
-        return ResponseEntity.ok(service.listarRecebidas(responsavelId));
+    public ResponseEntity<List<Mensagem>> listarMensagensRecebidas(@RequestParam UUID destinatarioId) {
+        return ResponseEntity.ok(mensagemService.listarRecebidas(destinatarioId));
     }
 
     @PutMapping("/{id}/ler")
-    public ResponseEntity<String> marcarComoLida(@PathVariable UUID id) {
-        service.marcarComoLida(id);
+    public ResponseEntity<String> marcarComoLida(@PathVariable Long id) {
+        mensagemService.marcarComoLida(id);
         return ResponseEntity.ok("Mensagem marcada como lida.");
     }
 
     @GetMapping("/nao-lidas")
     public ResponseEntity<Long> contarNaoLidas(@RequestParam UUID responsavelId) {
-        return ResponseEntity.ok(service.contarNaoLidas(responsavelId));
+        return ResponseEntity.ok(mensagemService.contarNaoLidas(responsavelId));
     }
 
     @GetMapping("/conversa")
-    public ResponseEntity<List<Mensagem>> obterConversa(@RequestParam UUID professorId, @RequestParam UUID responsavelId) {
-        return ResponseEntity.ok(service.obterConversa(professorId, responsavelId));
+    public ResponseEntity<List<Mensagem>> obterConversa(
+            @RequestParam UUID usuario1Id,
+            @RequestParam UUID usuario2Id) {
+        return ResponseEntity.ok(mensagemService.obterConversa(usuario1Id, usuario2Id));
     }
 }

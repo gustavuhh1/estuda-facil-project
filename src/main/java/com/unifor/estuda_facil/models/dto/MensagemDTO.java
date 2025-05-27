@@ -6,8 +6,10 @@ import java.util.UUID;
 
 @Data
 public class MensagemDTO {
-    private UUID professorId;
-    private UUID responsavelId;
+    private UUID remetenteId;
+    private UUID destinatarioId;
+    private Long respostaParaId;
     private String conteudo;
-    private UUID respostaParaId;
+
+
 }

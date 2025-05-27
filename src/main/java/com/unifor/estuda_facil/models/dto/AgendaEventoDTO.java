@@ -5,7 +5,6 @@ import com.unifor.estuda_facil.models.entity.enums.TipoEvento;
 import lombok.Data;
 
 import java.time.LocalDate;
-
 import java.util.UUID;
 
 @Data
@@ -14,6 +13,6 @@ public class AgendaEventoDTO {
     private String descricao;
     private LocalDate dataEvento;
     private TipoEvento tipo;
-    private UUID turmaId;
+    private Long turmaId;
     private UUID professorId;
 }

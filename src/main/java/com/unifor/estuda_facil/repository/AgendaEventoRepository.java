@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface AgendaEventoRepository extends JpaRepository<AgendaEvento, Long> {
     List<AgendaEvento> findByTurmaIdOrderByDataEventoAsc(Long turmaId);
-    List<AgendaEvento> findByProfessorIdOrderByDataEventoAsc(Long professorId);
+    List<AgendaEvento> findByProfessorIdOrderByDataEventoAsc(UUID professorId);
 
     @Query("""
     SELECT e FROM AgendaEvento e
@@ -17,7 +18,7 @@ public interface AgendaEventoRepository extends JpaRepository<AgendaEvento, Long
        OR (e.turma.id = :turmaId AND e.aluno IS NULL)
     ORDER BY e.dataEvento ASC
 """)
-    List<AgendaEvento> buscarAgendaCompletaDoAluno(@Param("alunoId") Long alunoId,
+    List<AgendaEvento> buscarAgendaCompletaDoAluno(@Param("alunoId") UUID alunoId,
                                                    @Param("turmaId") Long turmaId);
 
 }

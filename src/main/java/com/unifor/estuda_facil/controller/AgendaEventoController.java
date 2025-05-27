@@ -11,42 +11,46 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/agenda")
-class AgendaEventoController {
-    private final AgendaEventoService service;
-    public AgendaEventoController(AgendaEventoService service) {
-        this.service = service;
+public class AgendaEventoController {
+
+    private final AgendaEventoService agendaEventoService;
+
+    public AgendaEventoController(AgendaEventoService agendaEventoService) {
+        this.agendaEventoService = agendaEventoService;
     }
 
     @PostMapping
     public ResponseEntity<String> criarEvento(@RequestBody AgendaEventoDTO dto) {
-        service.criarEvento(dto);
+        agendaEventoService.criarEvento(dto);
         return ResponseEntity.ok("Evento criado com sucesso.");
     }
 
     @GetMapping
-    public ResponseEntity<List<AgendaEvento>> listarPorTurma(@RequestParam UUID turmaId) {
-        return ResponseEntity.ok(service.listarPorTurma(turmaId));
+    public ResponseEntity<List<AgendaEvento>> listarPorTurma(@RequestParam Long turmaId) {
+        return ResponseEntity.ok(agendaEventoService.listarPorTurma(turmaId));
     }
 
     @GetMapping("/professor/{professorId}")
     public ResponseEntity<List<AgendaEvento>> listarPorProfessor(@PathVariable UUID professorId) {
-        return ResponseEntity.ok(service.listarPorProfessor(professorId));
+        return ResponseEntity.ok(agendaEventoService.listarPorProfessor(professorId));
+    }
+    @GetMapping("/aluno/{alunoId}")
+    public ResponseEntity<List<AgendaEvento>> listarAgendaDoAluno(@PathVariable UUID alunoId, @RequestParam Long turmaId) {
+        List<AgendaEvento> eventos = agendaEventoService.listarAgendaDoAluno(alunoId, turmaId);
+        return ResponseEntity.ok(eventos);
     }
 
-    @GetMapping("/aluno/{alunoId}")
-    public ResponseEntity<List<AgendaEvento>> listarAgendaDoAluno(@PathVariable UUID alunoId, @RequestParam UUID turmaId) {
-        return ResponseEntity.ok(service.listarAgendaDoAluno(alunoId, turmaId));
-    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> editarEvento(@PathVariable UUID id, @RequestBody AgendaEventoDTO dto) {
-        service.editarEvento(id, dto);
+    public ResponseEntity<String> editarEvento(@PathVariable Long id, @RequestBody AgendaEventoDTO dto) {
+        agendaEventoService.editarEvento(id, dto);
         return ResponseEntity.ok("Evento atualizado com sucesso.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarEvento(@PathVariable UUID id) {
-        service.deletarEvento(id);
+    public ResponseEntity<String> deletarEvento(@PathVariable Long id) {
+        agendaEventoService.deletarEvento(id);
         return ResponseEntity.ok("Evento deletado com sucesso.");
     }
+
 }

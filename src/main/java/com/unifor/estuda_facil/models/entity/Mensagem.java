@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -15,16 +14,16 @@ import java.util.UUID;
 public class Mensagem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "professor_id", nullable = false)
-    private Professor remetente;
+    @JoinColumn(name = "remetente_id", nullable = false)
+    private Usuario remetente;
 
     @ManyToOne
-    @JoinColumn(name = "responsavel_id", nullable = false)
-    private Responsavel destinatario;
+    @JoinColumn(name = "destinatario_id", nullable = false)
+    private Usuario destinatario;
 
     @ManyToOne
     @JoinColumn(name = "resposta_para_id")
@@ -33,7 +32,7 @@ public class Mensagem {
 
     private String conteudo;
 
-    private LocalDateTime dataEnvio;
+    private LocalDateTime dataEnvio = LocalDateTime.now();
 
     private boolean lida = false;
 }

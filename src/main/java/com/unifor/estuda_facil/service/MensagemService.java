@@ -4,34 +4,33 @@ import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.factory.MensagemFactory;
 import com.unifor.estuda_facil.models.dto.MensagemDTO;
 import com.unifor.estuda_facil.models.entity.Mensagem;
-import com.unifor.estuda_facil.models.entity.Professor;
-import com.unifor.estuda_facil.models.entity.Responsavel;
+import com.unifor.estuda_facil.models.entity.Usuario;
 import com.unifor.estuda_facil.repository.MensagemRepository;
-import com.unifor.estuda_facil.repository.ProfessorRepository;
-import com.unifor.estuda_facil.repository.ResponsavelRepository;
+import com.unifor.estuda_facil.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class MensagemService {
 
     private final MensagemRepository mensagemRepository;
-    private final ProfessorRepository professorRepository;
-    private final ResponsavelRepository responsavelRepository;
+    private final UsuarioRepository usuarioRepository;
     private final MensagemFactory mensagemFactory;
 
 
     @Loggable
     public void enviarMensagem(MensagemDTO dto) {
-        Professor professor = professorRepository.findById(dto.getProfessorId())
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
-        Responsavel responsavel = responsavelRepository.findById(dto.getResponsavelId())
-                .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
+        Usuario remetente = usuarioRepository.findById(dto.getRemetenteId())
+                .orElseThrow(() -> new RuntimeException("Remetente não encontrado"));
 
-        Mensagem mensagem = mensagemFactory.criarMensagem(dto, professor, responsavel);
+        Usuario destinatario = usuarioRepository.findById(dto.getDestinatarioId())
+                .orElseThrow(() -> new RuntimeException("Destinatário não encontrado"));
+
+        Mensagem mensagem = mensagemFactory.criarMensagem(dto, remetente, destinatario);
 
         if (dto.getRespostaParaId() != null) {
             mensagemRepository.findById(dto.getRespostaParaId())
@@ -42,11 +41,11 @@ public class MensagemService {
     }
 
     @Loggable
-    public List<Mensagem> listarRecebidas(Long responsavelId) {
-        Responsavel responsavel = responsavelRepository.findById(responsavelId)
-                .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
+    public List<Mensagem> listarRecebidas(UUID destinatarioId) {
+        Usuario destinatario = usuarioRepository.findById(destinatarioId)
+                .orElseThrow(() -> new RuntimeException("Destinatário não encontrado"));
 
-        return mensagemRepository.findByDestinatarioOrderByDataEnvioDesc(responsavel);
+        return mensagemRepository.findByDestinatarioOrderByDataEnvioDesc(destinatario);
     }
     @Loggable
     public void marcarComoLida(Long id) {
@@ -59,21 +58,18 @@ public class MensagemService {
         }
     }
     @Loggable
-    public long contarNaoLidas(Long responsavelId) {
-        if (!responsavelRepository.existsById(responsavelId)) {
-            throw new RuntimeException("Responsável não encontrado");
+    public Long contarNaoLidas(UUID destinatarioId) {
+        if (!usuarioRepository.existsById(destinatarioId)) {
+            throw new RuntimeException("Usuário não encontrado");
         }
-        return mensagemRepository.countByDestinatarioIdAndLidaFalse(responsavelId);
+        return mensagemRepository.countByDestinatarioIdAndLidaFalse(destinatarioId);
     }
     @Loggable
-    public List<Mensagem> obterConversa(Long professorId, Long responsavelId) {
-        if (!professorRepository.existsById(professorId)) {
-            throw new RuntimeException("Professor não encontrado");
-        }
-        if (!responsavelRepository.existsById(responsavelId)) {
-            throw new RuntimeException("Responsável não encontrado");
+    public List<Mensagem> obterConversa(UUID usuario1Id, UUID usuario2Id) {
+        if (!usuarioRepository.existsById(usuario1Id) || !usuarioRepository.existsById(usuario2Id)) {
+            throw new RuntimeException("Usuários não encontrados");
         }
 
-        return mensagemRepository.buscarConversaEntre(professorId, responsavelId);
+        return mensagemRepository.buscarConversaEntre(usuario1Id, usuario2Id);
     }
 }

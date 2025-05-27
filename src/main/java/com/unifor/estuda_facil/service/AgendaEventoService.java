@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,8 @@ public class AgendaEventoService {
                 .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
 
         AgendaEvento evento = agendaEventoFactory.criar(dto, professor, turma);
-        return agendaEventoRepository.save(evento);
+        agendaEventoRepository.save(evento);
+        return evento;
     }
 
     @Loggable
@@ -45,7 +47,7 @@ public class AgendaEventoService {
     }
 
     @Loggable
-    public List<AgendaEvento> listarPorProfessor(Long professorId) {
+    public List<AgendaEvento> listarPorProfessor(UUID professorId) {
         if (!professorRepository.existsById(professorId)) {
             throw new RuntimeException("Professor não encontrado");
         }
@@ -74,7 +76,7 @@ public class AgendaEventoService {
         agendaEventoRepository.deleteById(id);
     }
     @Loggable
-    public List<AgendaEvento> listarAgendaDoAluno(Long alunoId, Long turmaId) {
+    public List<AgendaEvento> listarAgendaDoAluno(UUID alunoId, Long turmaId) {
         return agendaEventoRepository.buscarAgendaCompletaDoAluno(alunoId, turmaId);
     }
 

@@ -2,7 +2,6 @@ package com.unifor.estuda_facil.controller;
 
 import com.unifor.estuda_facil.models.dto.AvisoDTO;
 import com.unifor.estuda_facil.models.entity.Aviso;
-import com.unifor.estuda_facil.models.entity.Turma;
 import com.unifor.estuda_facil.service.AvisoService;
 import com.unifor.estuda_facil.service.TurmaService;
 import jakarta.validation.Valid;
@@ -12,19 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import com.unifor.estuda_facil.models.dto.*;
-import com.unifor.estuda_facil.models.entity.*;
-import com.unifor.estuda_facil.service.*;
-import com.unifor.estuda_facil.factory.TarefaFactory;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.*;
 
 
 @RestController
@@ -50,23 +36,23 @@ class AvisoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Aviso> buscar(@PathVariable UUID id) {
+    public ResponseEntity<Aviso> buscar(@PathVariable Long id) {
         return service.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<?> listarPorTurma(@RequestParam(required = false) UUID turmaId) {
+    public ResponseEntity<?> listarPorTurma(@RequestParam(required = false) Long turmaId) {
         return turmaId != null ? ResponseEntity.ok(service.listarPorTurmaOuGerais(turmaId)) : ResponseEntity.ok(service.listarTodosOrdenado());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable UUID id, @RequestBody @Valid AvisoDTO dto) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody @Valid AvisoDTO dto) {
         Optional<Aviso> avisoOpt = service.buscarPorId(id);
         if (avisoOpt.isEmpty()) return ResponseEntity.notFound().build();
         Aviso aviso = avisoOpt.get();
