@@ -15,12 +15,17 @@ import java.util.UUID;
 public class ResponsavelService {
 
     private final ResponsavelRepository responsavelRepository;
+    private final UsuarioService usuarioService;
+
     @Loggable
     public Responsavel criarResponsavel(ResponsavelDTO dto) {
         Responsavel responsavel = new Responsavel();
         responsavel.setNome(dto.getNome());
         responsavel.setTelefone(dto.getTelefone());
         responsavel.setCpf(dto.getCpf());
+
+        usuarioService.prepararUsuario(responsavel);
+
         return responsavelRepository.save(responsavel);
     }
     @Loggable

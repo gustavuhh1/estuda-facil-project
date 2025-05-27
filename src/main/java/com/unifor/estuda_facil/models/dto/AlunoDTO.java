@@ -14,7 +14,6 @@ import java.util.UUID;
  */
 @Data
 public class AlunoDTO {
-    private Long id;
 
     @NotNull(message = "Nome do aluno é obrigatório")
     private String nome;

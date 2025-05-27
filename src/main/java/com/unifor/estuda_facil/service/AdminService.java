@@ -3,7 +3,6 @@ package com.unifor.estuda_facil.service;
 import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.dto.AdminDTO;
 import com.unifor.estuda_facil.models.entity.Admin;
-import com.unifor.estuda_facil.models.entity.Usuario;
 import com.unifor.estuda_facil.models.entity.enums.Role;
 import com.unifor.estuda_facil.repository.AdminRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +16,10 @@ import java.util.UUID;
 public class AdminService {
 
     private final AdminRepository adminRepository;
+    private final UsuarioService usuarioService;
 
     @Loggable
     public Admin criarAdmin(AdminDTO dto) {
-
-        // Cria o admin
         Admin admin = new Admin();
         admin.setNome(dto.getNome());
         admin.setDepartamento(dto.getDepartamento());
@@ -29,6 +27,9 @@ public class AdminService {
         admin.setEmail(dto.getEmail());
         admin.setSenha(dto.getSenha());
         admin.setRole(Role.COORDENACAO);
+
+        // Aplica regras comuns (criptografar senha, etc.)
+        usuarioService.prepararUsuario(admin);
 
         return adminRepository.save(admin);
     }

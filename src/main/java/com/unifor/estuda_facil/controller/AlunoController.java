@@ -1,6 +1,7 @@
 package com.unifor.estuda_facil.controller;
 
 import com.unifor.estuda_facil.models.dto.AlunoDTO;
+import com.unifor.estuda_facil.models.dto.AlunoResponseDTO;
 import com.unifor.estuda_facil.models.entity.Aluno;
 import com.unifor.estuda_facil.service.AlunoService;
 import jakarta.validation.Valid;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/aluno")
@@ -35,8 +37,12 @@ public class AlunoController {
 
 
     @GetMapping
-    public ResponseEntity<List<Aluno>> listar() {
-        return ResponseEntity.ok(service.listarAlunos());
+    public ResponseEntity<List<AlunoResponseDTO>> listar() {
+        List<AlunoResponseDTO> dtos = service.listarAlunos()
+                .stream()
+                .map(AlunoResponseDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")

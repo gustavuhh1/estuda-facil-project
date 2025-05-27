@@ -5,10 +5,10 @@ import com.unifor.estuda_facil.models.entity.Turma;
 import com.unifor.estuda_facil.service.TurmaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/turma")
@@ -19,6 +19,7 @@ class TurmaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('COORDENACAO')")
     public ResponseEntity<Turma> criar(@RequestBody @Valid TurmaDTO dto) {
         Turma t = new Turma();
         t.setCodigo(dto.getCodigo());

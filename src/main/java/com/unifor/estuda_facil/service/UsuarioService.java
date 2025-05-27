@@ -4,6 +4,7 @@ import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.models.entity.Usuario;
 import com.unifor.estuda_facil.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,18 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public <T extends Usuario> T prepararUsuario(T usuario) {
+        if (usuario.getSenha() != null && !usuario.getSenha().startsWith("$2a$")) {
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        }
+        return usuario;
+    }
 
     @Loggable
     public List<Usuario> listarTodas() {

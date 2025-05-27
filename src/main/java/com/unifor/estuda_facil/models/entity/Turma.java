@@ -3,6 +3,7 @@ package com.unifor.estuda_facil.models.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class Turma {
 
     @OneToMany(mappedBy = "turma")
     @JsonManagedReference
+    @ToString.Exclude
     private List<Aluno> alunos;
 
     @ManyToMany

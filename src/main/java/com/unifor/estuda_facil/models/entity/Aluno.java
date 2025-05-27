@@ -2,14 +2,10 @@ package com.unifor.estuda_facil.models.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -28,6 +24,7 @@ public class Aluno extends Usuario{
 
     @ManyToOne
     @JoinColumn(name = "turma_id")
+    @ToString.Exclude
     @JsonBackReference
     private Turma turma;
 
@@ -37,5 +34,6 @@ public class Aluno extends Usuario{
             joinColumns = @JoinColumn(name = "aluno_id"),
             inverseJoinColumns = @JoinColumn(name = "responsavel_id")
     )
+    @ToString.Exclude
     private List<Responsavel> responsaveis;
 }

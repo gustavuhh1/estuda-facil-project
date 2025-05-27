@@ -15,7 +15,7 @@ public class ProfessorDTO {
     private String nome;
 
     private String disciplina;
-    private String telefone;
+    private String telefoneContato;
 
     @Email(message = "Email inválido")
     @NotBlank(message = "Email é obrigatório")

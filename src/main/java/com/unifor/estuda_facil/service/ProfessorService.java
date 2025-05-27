@@ -15,17 +15,19 @@ import java.util.UUID;
 public class ProfessorService {
 
     private final ProfessorRepository professorRepository;
+    private final UsuarioService usuarioService;
 
     public Professor criarProfessor(ProfessorDTO dto) {
 
         Professor p = new Professor();
         p.setNome(dto.getNome());
         p.setDisciplina(dto.getDisciplina());
-        p.setTelefone(dto.getTelefone());
+        p.setTelefone(dto.getTelefoneContato());
         p.setEmail(dto.getEmail());
         p.setSenha(dto.getSenha());
         p.setRole(Role.PROFESSOR);
 
+        usuarioService.prepararUsuario(p);
 
         return professorRepository.save(p);
     }
@@ -43,7 +45,7 @@ public class ProfessorService {
         Professor p = buscarPorId(id);
         p.setNome(dto.getNome());
         p.setDisciplina(dto.getDisciplina());
-        p.setTelefone(dto.getTelefone());
+        p.setTelefone(dto.getTelefoneContato());
         return professorRepository.save(p);
     }
 

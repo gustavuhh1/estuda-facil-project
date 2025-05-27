@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class AlunoService {
 
     private final AlunoRepository alunoRepository;
+    private final UsuarioService usuarioService;
     private final TurmaRepository turmaRepository;
     private final ResponsavelRepository responsavelRepository;
 
@@ -31,6 +32,8 @@ public class AlunoService {
         aluno.setEmail(dto.getEmail());
         aluno.setSenha(dto.getSenha());
         aluno.setRole(Role.ALUNO);
+
+        usuarioService.prepararUsuario(aluno);
 
         // Associa turma (se informada)
         buscarTurma(dto.getTurmaId()).ifPresent(aluno::setTurma);
