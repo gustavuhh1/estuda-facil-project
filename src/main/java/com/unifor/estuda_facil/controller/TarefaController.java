@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/tarefa")
-class TarefaController {
+public class TarefaController {
+
     private final TarefaService tarefaService;
     private final TurmaService turmaService;
+
     public TarefaController(TarefaService tarefaService, TurmaService turmaService) {
         this.tarefaService = tarefaService;
         this.turmaService = turmaService;
@@ -27,14 +28,22 @@ class TarefaController {
 
     @PostMapping
     public ResponseEntity<Tarefa> criar(@RequestBody @Valid TarefaDTO dto) {
-        Turma turma = dto.getTurmaId() != null ? turmaService.buscarPorId(dto.getTurmaId()).orElse(null) : null;
+        Turma turma = null;
+        if (dto.getTurmaId() != null) {
+            turma = turmaService.buscarPorId(dto.getTurmaId())
+                    .orElseThrow(() -> new IllegalArgumentException("Turma não encontrada"));
+        }
+
         Tarefa tarefa = TarefaFactory.criarTarefa(dto, turma);
-        return ResponseEntity.status(HttpStatus.CREATED).body(tarefaService.salvar(tarefa));
+        Tarefa saved = tarefaService.salvar(tarefa);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Tarefa> buscar(@PathVariable UUID id) {
-        return tarefaService.buscarPorId(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Tarefa> buscar(@PathVariable Long id) {
+        return tarefaService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
@@ -43,18 +52,26 @@ class TarefaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Tarefa> atualizar(@PathVariable UUID id, @RequestBody @Valid TarefaDTO dto) {
-        Optional<Tarefa> opt = tarefaService.buscarPorId(id);
-        if (opt.isEmpty()) return ResponseEntity.notFound().build();
-        Turma turma = dto.getTurmaId() != null ? turmaService.buscarPorId(dto.getTurmaId()).orElse(null) : null;
-        Tarefa tarefa = TarefaFactory.atualizarTarefa(opt.get(), dto, turma);
-        return ResponseEntity.ok(tarefaService.salvar(tarefa));
+    public ResponseEntity<Tarefa> atualizar(@PathVariable Long id, @RequestBody @Valid TarefaDTO dto) {
+        Optional<Tarefa> optTarefa = tarefaService.buscarPorId(id);
+        if (optTarefa.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Turma turma = null;
+        if (dto.getTurmaId() != null) {
+            turma = turmaService.buscarPorId(dto.getTurmaId())
+                    .orElseThrow(() -> new IllegalArgumentException("Turma não encontrada"));
+        }
+
+        Tarefa tarefaAtualizada = TarefaFactory.atualizarTarefa(optTarefa.get(), dto, turma);
+        Tarefa saved = tarefaService.salvar(tarefaAtualizada);
+        return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         tarefaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }
-

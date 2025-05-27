@@ -12,7 +12,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/responsaveis")
-class ResponsavelController {
+public class ResponsavelController {
+
     private final ResponsavelService service;
     public ResponsavelController(ResponsavelService service) {
         this.service = service;

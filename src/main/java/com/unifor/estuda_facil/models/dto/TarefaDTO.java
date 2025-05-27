@@ -6,11 +6,10 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-import java.util.UUID;
 
 @Data
 public class TarefaDTO {
-    private UUID id;
+    private Long id;
 
     @NotBlank(message = "Título da tarefa é obrigatório")
     private String titulo;
@@ -20,6 +19,6 @@ public class TarefaDTO {
     @NotNull(message = "Data de entrega é obrigatória")
     private LocalDate dataEntrega;
 
-    private UUID turmaId;
+    private Long turmaId;
 }
 
