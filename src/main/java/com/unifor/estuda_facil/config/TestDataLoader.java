@@ -1,8 +1,8 @@
 package com.unifor.estuda_facil.config;
 
-import com.unifor.estuda_facil.models.entity.Usuario;
+import com.unifor.estuda_facil.models.entity.Admin;
 import com.unifor.estuda_facil.models.entity.enums.Role;
-import com.unifor.estuda_facil.repository.UsuarioRepository;
+import com.unifor.estuda_facil.repository.AdminRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -10,29 +10,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestDataLoader implements CommandLineRunner {
 
-    private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdminRepository adminRepository;
 
-    public TestDataLoader(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
+    public TestDataLoader(PasswordEncoder passwordEncoder, AdminRepository adminRepository) {
         this.passwordEncoder = passwordEncoder;
+        this.adminRepository = adminRepository;
     }
 
     @Override
     public void run(String... args) {
-        addUserIfNotExists("coordenador@teste.com", "1234", Role.COORDENACAO);
-        addUserIfNotExists("professor@teste.com", "1234", Role.PROFESSOR);
-        addUserIfNotExists("aluno@teste.com", "1234", Role.ALUNO);
-        addUserIfNotExists("responsavel@teste.com", "1234", Role.RESPONSAVEL);
+        addUserIfNotExists("coordenador@teste.com", Role.COORDENACAO);
+        addUserIfNotExists("professor@teste.com", Role.PROFESSOR);
+        addUserIfNotExists("aluno@teste.com", Role.ALUNO);
+        addUserIfNotExists("responsavel@teste.com", Role.RESPONSAVEL);
     }
 
-    private void addUserIfNotExists(String email, String rawPassword, Role role) {
-        if (usuarioRepository.findByEmail(email).isEmpty()) {
-            Usuario user = new Usuario();
+    private void addUserIfNotExists(String email, Role role) {
+        if (adminRepository.findByEmail(email).isEmpty()) {
+            Admin user = new Admin();
             user.setEmail(email);
-            user.setSenha(passwordEncoder.encode(rawPassword));
+            user.setSenha(passwordEncoder.encode("123456"));
             user.setRole(role);
-            usuarioRepository.save(user);
+            user.setNome("Gustavo Martins");
+            adminRepository.save(user);
         }
     }
 }
