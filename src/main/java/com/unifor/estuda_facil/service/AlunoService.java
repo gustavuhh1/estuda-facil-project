@@ -6,7 +6,6 @@ import com.unifor.estuda_facil.models.dto.AlunoResponseDTO;
 import com.unifor.estuda_facil.models.entity.*;
 import com.unifor.estuda_facil.models.entity.enums.Role;
 import com.unifor.estuda_facil.repository.AlunoRepository;
-import com.unifor.estuda_facil.repository.ResponsavelRepository;
 import com.unifor.estuda_facil.repository.TurmaRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +21,6 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final UsuarioService usuarioService;
     private final TurmaRepository turmaRepository;
-    private final ResponsavelRepository responsavelRepository;
 
     @Loggable
     public Aluno criarAluno(@Valid AlunoResponseDTO dto) {
@@ -39,11 +36,6 @@ public class AlunoService {
 
         // Associa turma (se informada)
         buscarTurma(dto.getTurmaId()).ifPresent(aluno::setTurma);
-
-        // Associa responsáveis (se houver)
-        if (dto.getResponsavelIds() != null && !dto.getResponsavelIds().isEmpty()) {
-            aluno.setResponsaveis(buscarResponsaveis(dto.getResponsavelIds()));
-        }
 
         return alunoRepository.save(aluno);
     }
@@ -84,13 +76,6 @@ public class AlunoService {
     }
 
     // 🔽 Métodos auxiliares clean 🔽
-
-    private List<Responsavel> buscarResponsaveis(List<UUID> ids) {
-        return ids.stream()
-                .map(id -> responsavelRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("Responsável não encontrado: " + id)))
-                .collect(Collectors.toList());
-    }
 
     private java.util.Optional<Turma> buscarTurma(Long turmaId) {
         if (turmaId == null) return java.util.Optional.empty();

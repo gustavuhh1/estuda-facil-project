@@ -23,7 +23,6 @@ public class TestDataLoader implements CommandLineRunner {
         addUserIfNotExists("coordenador@teste.com", Role.COORDENACAO);
         addUserIfNotExists("professor@teste.com", Role.PROFESSOR);
         addUserIfNotExists("aluno@teste.com", Role.ALUNO);
-        addUserIfNotExists("responsavel@teste.com", Role.RESPONSAVEL);
     }
 
     private void addUserIfNotExists(String email, Role role) {

@@ -27,13 +27,4 @@ public class Aluno extends Usuario{
     @ToString.Exclude
     @JsonBackReference
     private Turma turma;
-
-    @ManyToMany
-    @JoinTable(
-            name = "aluno_responsavel",
-            joinColumns = @JoinColumn(name = "aluno_id"),
-            inverseJoinColumns = @JoinColumn(name = "responsavel_id")
-    )
-    @ToString.Exclude
-    private List<Responsavel> responsaveis;
 }

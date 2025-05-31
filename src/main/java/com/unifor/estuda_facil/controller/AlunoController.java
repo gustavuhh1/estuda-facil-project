@@ -34,8 +34,6 @@ public class AlunoController {
         return ResponseEntity.ok("Turma atribuída ao aluno com sucesso!");
     }
 
-
-
     @GetMapping
     public ResponseEntity<List<AlunoResponseDTO>> listar() {
         List<AlunoResponseDTO> dtos = service.listarAlunos()
