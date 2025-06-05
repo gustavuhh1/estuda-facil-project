@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
-
+import java.util.UUID;
 
 @Data
 public class TarefaDTO {
@@ -19,6 +19,11 @@ public class TarefaDTO {
     @NotNull(message = "Data de entrega é obrigatória")
     private LocalDate dataEntrega;
 
-    private Long turmaId;
-}
+    private String disciplina;
 
+    private Boolean concluida;
+
+    private Long turmaId;
+
+    private UUID professorId;
+}

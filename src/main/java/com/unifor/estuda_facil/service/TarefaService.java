@@ -3,8 +3,10 @@ package com.unifor.estuda_facil.service;
 import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.factory.TarefaFactory;
 import com.unifor.estuda_facil.models.dto.TarefaDTO;
+import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.Tarefa;
 import com.unifor.estuda_facil.models.entity.Turma;
+import com.unifor.estuda_facil.repository.ProfessorRepository;
 import com.unifor.estuda_facil.repository.TarefaRepository;
 import com.unifor.estuda_facil.repository.TurmaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class TarefaService {
 
     private final TarefaRepository tarefaRepository;
     private final TurmaRepository turmaRepository;
+    private final ProfessorRepository professorRepository;
 
     @Loggable
     public List<Tarefa> listarTodas() {
@@ -45,10 +48,14 @@ public class TarefaService {
         Turma turma = turmaRepository.findById(dto.getTurmaId())
                 .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
 
-        TarefaFactory.atualizarTarefa(tarefa, dto, turma);
+        Professor professor = professorRepository.findById(dto.getProfessorId())
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        TarefaFactory.atualizarTarefa(tarefa, dto, turma, professor);
 
         return tarefaRepository.save(tarefa);
     }
+
 
     @Loggable
     public void deletar(Long id) {

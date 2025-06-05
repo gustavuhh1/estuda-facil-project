@@ -1,6 +1,5 @@
 package com.unifor.estuda_facil.models.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,13 +19,20 @@ public class Tarefa {
     private Long id;
 
     private String titulo;
-
     private String descricao;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataEntrega;
 
+    private String disciplina;
+
+    private boolean concluida = false;
+
     @ManyToOne
     @JoinColumn(name = "turma_id")
     private Turma turma;
+
+    @ManyToOne
+    @JoinColumn(name = "professor_id")
+    private Professor professor;
 }
