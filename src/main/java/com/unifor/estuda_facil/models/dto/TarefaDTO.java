@@ -21,7 +21,6 @@ public class TarefaDTO {
 
     private String disciplina;
 
-    private Boolean concluida;
 
     private Long turmaId;
 

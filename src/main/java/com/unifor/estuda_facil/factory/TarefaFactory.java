@@ -13,7 +13,6 @@ public class TarefaFactory {
         tarefa.setDescricao(dto.getDescricao());
         tarefa.setDataEntrega(dto.getDataEntrega());
         tarefa.setDisciplina(dto.getDisciplina());
-        tarefa.setConcluida(dto.getConcluida() != null && dto.getConcluida());
         tarefa.setTurma(turma);
         tarefa.setProfessor(professor);
         return tarefa;
@@ -24,7 +23,6 @@ public class TarefaFactory {
         tarefa.setDescricao(dto.getDescricao());
         tarefa.setDataEntrega(dto.getDataEntrega());
         tarefa.setDisciplina(dto.getDisciplina());
-        tarefa.setConcluida(dto.getConcluida() != null && dto.getConcluida());
         tarefa.setTurma(turma);
         tarefa.setProfessor(professor);
         return tarefa;
