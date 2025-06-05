@@ -27,7 +27,6 @@ public class Tarefa {
     private LocalDate dataEntrega;
 
     @ManyToOne
-    @Nullable
     @JoinColumn(name = "turma_id")
     private Turma turma;
 }
