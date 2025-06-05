@@ -26,8 +26,6 @@ public class Tarefa {
 
     private String disciplina;
 
-    private boolean concluida = false;
-
     @ManyToOne
     @JoinColumn(name = "turma_id")
     private Turma turma;
