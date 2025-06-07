@@ -1,13 +1,15 @@
 package com.unifor.estuda_facil.models.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.UUID;
 
 @Data
+@AllArgsConstructor
 public class TurmaDTO {
-    private UUID id;
+    private Long id;
 
     @NotBlank(message = "Código da turma é obrigatório")
     private String codigo;

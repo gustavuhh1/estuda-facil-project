@@ -1,14 +1,17 @@
 package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.models.dto.ProfessorDTO;
+import com.unifor.estuda_facil.models.dto.TurmaDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.enums.Role;
 import com.unifor.estuda_facil.repository.ProfessorRepository;
+import com.unifor.estuda_facil.repository.TurmaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +19,7 @@ public class ProfessorService {
 
     private final ProfessorRepository professorRepository;
     private final UsuarioService usuarioService;
+    private final TurmaRepository turmaRepository;
 
     public Professor criarProfessor(ProfessorDTO dto) {
 
@@ -51,5 +55,13 @@ public class ProfessorService {
 
     public void deletarProfessor(UUID id) {
         professorRepository.deleteById(id);
+    }
+
+    public List<TurmaDTO> turmasDoProfessor(UUID professorId) {
+        return turmaRepository.findAll().stream()
+                .filter(t -> t.getProfessores() != null &&
+                        t.getProfessores().stream().anyMatch(p -> p.getId().equals(professorId)))
+                .map(t -> new TurmaDTO(t.getId(), t.getCodigo(), t.getNome(), t.getAnoLetivo()))
+                .collect(Collectors.toList());
     }
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "professores")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Professor extends Usuario{
+public class Professor extends Usuario {
 
     @Column(nullable = false)
     private String nome;
