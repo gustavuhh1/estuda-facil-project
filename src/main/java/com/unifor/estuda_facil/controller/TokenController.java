@@ -6,6 +6,7 @@ import com.unifor.estuda_facil.models.dto.TokenValidationDTO;
 import com.unifor.estuda_facil.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,11 +18,13 @@ class TokenController {
     }
 
     @PostMapping("/gerar")
+    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO')")
     public ResponseEntity<TokenResponseDTO> gerarToken(@RequestBody @Valid TokenRequestDTO req) {
         return ResponseEntity.ok(service.generate(req));
     }
 
     @PostMapping("/validar")
+    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO')")
     public ResponseEntity<Void> validarToken(@RequestBody @Valid TokenValidationDTO req) {
         return service.validate(req) ? ResponseEntity.ok().build() : ResponseEntity.status(401).build();
     }
