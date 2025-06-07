@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,24 +25,36 @@ public class TarefaService {
     private final ProfessorRepository professorRepository;
 
     @Loggable
-    public List<Tarefa> listarTodas() {
-        return tarefaRepository.findAll();
+    public List<TarefaDTO> listarTodas() {
+        return tarefaRepository.findAll().stream()
+                .map(t -> new TarefaDTO(t.getId(), t.getTitulo(), t.getDescricao(), t.getDataEntrega(), t.getDisciplina(), Optional.ofNullable(t.getTurma()).map(Turma::getId).orElse(null), t.getProfessor().getId()))
+                .collect(Collectors.toList());
     }
 
     @Loggable
-    public Optional<Tarefa> buscarPorId(Long id) {
-        return tarefaRepository.findById(id);
+    public TarefaDTO buscarPorId(Long id) {
+        return tarefaRepository.findById(id)
+                .map(t -> new TarefaDTO(t.getId(), t.getTitulo(), t.getDescricao(), t.getDataEntrega(), t.getDisciplina(), Optional.ofNullable(t.getTurma()).map(Turma::getId).orElse(null), t.getProfessor().getId()))
+                .orElse(null);
     }
 
-
     @Loggable
-    public Tarefa salvar(Tarefa tarefa) {
-        return tarefaRepository.save(tarefa);
+    public TarefaDTO criar(TarefaDTO tarefaDTO) {
+        Turma turma = turmaRepository.findById(tarefaDTO.getTurmaId())
+                .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
+
+        Professor professor = professorRepository.findById(tarefaDTO.getProfessorId())
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+//        Tarefa tarefa = new Tarefa(tarefaDTO.getId(), tarefaDTO.getTitulo(), tarefaDTO.getDescricao(), tarefaDTO.getDataEntrega(), tarefaDTO.getDisciplina(), turma, professor);
+        Tarefa tarefa = TarefaFactory.criarTarefa(tarefaDTO, turma, professor);
+        tarefa = tarefaRepository.save(tarefa);
+
+        return new TarefaDTO(tarefa.getId(), tarefa.getTitulo(), tarefa.getDescricao(), tarefa.getDataEntrega(), tarefa.getDisciplina(), tarefa.getTurma().getId(), tarefa.getProfessor().getId());
     }
 
-
     @Loggable
-    public Tarefa atualizar(Long id, TarefaDTO dto) {
+    public TarefaDTO atualizar(Long id, TarefaDTO dto) {
         Tarefa tarefa = tarefaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
 
@@ -53,9 +66,10 @@ public class TarefaService {
 
         TarefaFactory.atualizarTarefa(tarefa, dto, turma, professor);
 
-        return tarefaRepository.save(tarefa);
-    }
+        tarefa = tarefaRepository.save(tarefa);
 
+        return new TarefaDTO(tarefa.getId(), tarefa.getTitulo(), tarefa.getDescricao(), tarefa.getDataEntrega(), tarefa.getDisciplina(), tarefa.getTurma().getId(), tarefa.getProfessor().getId());
+    }
 
     @Loggable
     public void deletar(Long id) {
