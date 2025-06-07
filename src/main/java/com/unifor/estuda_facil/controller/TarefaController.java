@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class TarefaController {
     private final ProfessorService professorService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
     public ResponseEntity<Tarefa> criar(@RequestBody @Valid TarefaDTO dto) {
         Turma turma = null;
         if (dto.getTurmaId() != null) {
@@ -46,6 +48,7 @@ public class TarefaController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO')")
     public ResponseEntity<Tarefa> buscar(@PathVariable Long id) {
         return tarefaService.buscarPorId(id)
                 .map(ResponseEntity::ok)
@@ -53,11 +56,13 @@ public class TarefaController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO')")
     public ResponseEntity<List<Tarefa>> listar() {
         return ResponseEntity.ok(tarefaService.listarTodas());
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
     public ResponseEntity<Tarefa> atualizar(@PathVariable Long id, @RequestBody @Valid TarefaDTO dto) {
         Optional<Tarefa> optTarefa = tarefaService.buscarPorId(id);
         if (optTarefa.isEmpty()) {
@@ -80,6 +85,7 @@ public class TarefaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         tarefaService.deletar(id);
         return ResponseEntity.noContent().build();
