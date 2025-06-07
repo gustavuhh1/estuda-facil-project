@@ -23,7 +23,7 @@ public class AlunoService {
     private final TurmaRepository turmaRepository;
 
     @Loggable
-    public Aluno criarAluno(@Valid AlunoResponseDTO dto) {
+    public Aluno criarAluno(AlunoResponseDTO dto) {
         Aluno aluno = new Aluno();
         aluno.setNome(dto.getNome());
         aluno.setDataNascimento(dto.getDataNascimento());

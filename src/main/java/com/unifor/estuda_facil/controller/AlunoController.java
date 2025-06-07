@@ -23,7 +23,7 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<Aluno> criar(@RequestBody @Valid AlunoResponseDTO dto) {
+        public ResponseEntity<Aluno> criar(@RequestBody AlunoResponseDTO dto) {
         Aluno a = service.criarAluno(dto);
         return ResponseEntity.status(201).body(a);
     }
@@ -34,13 +34,30 @@ public class AlunoController {
         return ResponseEntity.ok("Turma atribuída ao aluno com sucesso!");
     }
 
-    @GetMapping
+    @GetMapping()  // Especificando o endpoint
     public ResponseEntity<List<AlunoResponseDTO>> listar() {
-        List<AlunoResponseDTO> dtos = service.listarAlunos()
-                .stream()
-                .map(AlunoResponseDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+        try {
+            List<AlunoResponseDTO> dtos = service.listarAlunos()
+                    .stream()
+                    .map(aluno -> new AlunoResponseDTO(
+                            aluno.getId(),
+                            aluno.getNome(),
+                            aluno.getDataNascimento(),
+                            aluno.getMatricula(),
+                            aluno.getTurma().getId(),
+                            aluno.getEmail(),
+                            null // Não retornar a senha no DTO
+                    ))
+                    .collect(Collectors.toList());
+
+            if (dtos.isEmpty()) {
+                return ResponseEntity.noContent().build(); // 204 para lista vazia
+            }
+
+            return ResponseEntity.ok(dtos);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build(); // 500 para erros
+        }
     }
 
     @GetMapping("/{id}")
