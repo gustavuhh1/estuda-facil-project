@@ -52,12 +52,19 @@ public class UsuarioService {
     @Loggable
     public Usuario atualizar(UUID id, Usuario usuarioAtualizado) {
         return usuarioRepository.findById(id).map(usuario -> {
-            usuario.setEmail(usuarioAtualizado.getEmail());
-            usuario.setSenha(usuarioAtualizado.getSenha());
-            usuario.setRole(usuarioAtualizado.getRole());
+            if (usuarioAtualizado.getEmail() != null) {
+                usuario.setEmail(usuarioAtualizado.getEmail());
+            }
+            if (usuarioAtualizado.getSenha() != null && !usuarioAtualizado.getSenha().isBlank()) {
+                usuario.setSenha(usuarioAtualizado.getSenha());
+            }
+            if (usuarioAtualizado.getRole() != null) {
+                usuario.setRole(usuarioAtualizado.getRole());
+            }
             return usuarioRepository.save(usuario);
         }).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
+
 
     @Loggable
     public void deletar(UUID id) {

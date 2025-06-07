@@ -47,11 +47,26 @@ public class ProfessorService {
 
     public Professor atualizarProfessor(UUID id, ProfessorDTO dto) {
         Professor p = buscarPorId(id);
-        p.setNome(dto.getNome());
-        p.setDisciplina(dto.getDisciplina());
-        p.setTelefone(dto.getTelefoneContato());
+
+        if (dto.getNome() != null) {
+            p.setNome(dto.getNome());
+        }
+        if (dto.getDisciplina() != null) {
+            p.setDisciplina(dto.getDisciplina());
+        }
+        if (dto.getTelefoneContato() != null) {
+            p.setTelefone(dto.getTelefoneContato());
+        }
+        if (dto.getEmail() != null) {
+            p.setEmail(dto.getEmail());
+        }
+        if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
+            p.setSenha(dto.getSenha());
+        }
+
         return professorRepository.save(p);
     }
+
 
     public void deletarProfessor(UUID id) {
         professorRepository.deleteById(id);

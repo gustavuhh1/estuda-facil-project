@@ -17,6 +17,7 @@ public class AlunoDTO implements UsuarioResponseDTO{
     private String email;
     private String role;
     private String nome;
+    private String senha;
     private LocalDate dataNascimento;
     private String matricula;
     private Long turmaId;

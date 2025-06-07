@@ -1,5 +1,6 @@
 package com.unifor.estuda_facil.service;
 
+import com.unifor.estuda_facil.models.dto.TurmaDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.Turma;
 import com.unifor.estuda_facil.repository.ProfessorRepository;
@@ -29,14 +30,21 @@ public class TurmaService {
         return turmaRepository.save(turma);
     }
 
-    public Turma atualizar(Long id, Turma turmaAtualizada) {
+    public Turma atualizarTurma(Long id, TurmaDTO dto) {
         return turmaRepository.findById(id).map(turma -> {
-            turma.setNome(turmaAtualizada.getNome());
-            turma.setCodigo(turmaAtualizada.getCodigo());
-            turma.setAnoLetivo(turmaAtualizada.getAnoLetivo());
+            if (dto.getNome() != null && !dto.getNome().isBlank()) {
+                turma.setNome(dto.getNome());
+            }
+            if (dto.getCodigo() != null && !dto.getCodigo().isBlank()) {
+                turma.setCodigo(dto.getCodigo());
+            }
+            if (dto.getAnoLetivo() != null && !dto.getAnoLetivo().isBlank()) {
+                turma.setAnoLetivo(dto.getAnoLetivo());
+            }
             return turmaRepository.save(turma);
         }).orElseThrow(() -> new RuntimeException("Turma não encontrada"));
     }
+
 
     public void deletar(Long id) {
         turmaRepository.deleteById(id);

@@ -66,12 +66,16 @@ public class AlunoService {
         if (dto.getEmail() != null) {
             aluno.setEmail(dto.getEmail());
         }
+        if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
+            aluno.setSenha(dto.getSenha());
+        }
         if (dto.getTurmaId() != null) {
             buscarTurma(dto.getTurmaId()).ifPresent(aluno::setTurma);
         }
 
         return alunoRepository.save(aluno);
     }
+
 
     @Loggable
     public void deletarAluno(UUID id) {
