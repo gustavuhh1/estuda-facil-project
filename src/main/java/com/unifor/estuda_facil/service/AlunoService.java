@@ -53,11 +53,22 @@ public class AlunoService {
     @Loggable
     public Aluno atualizarAluno(UUID id, AlunoDTO dto) {
         Aluno aluno = buscarPorId(id);
-        aluno.setNome(dto.getNome());
-        aluno.setDataNascimento(dto.getDataNascimento());
-        aluno.setMatricula(dto.getMatricula());
 
-        buscarTurma(dto.getTurmaId()).ifPresent(aluno::setTurma);
+        if (dto.getNome() != null) {
+            aluno.setNome(dto.getNome());
+        }
+        if (dto.getDataNascimento() != null) {
+            aluno.setDataNascimento(dto.getDataNascimento());
+        }
+        if (dto.getMatricula() != null) {
+            aluno.setMatricula(dto.getMatricula());
+        }
+        if (dto.getEmail() != null) {
+            aluno.setEmail(dto.getEmail());
+        }
+        if (dto.getTurmaId() != null) {
+            buscarTurma(dto.getTurmaId()).ifPresent(aluno::setTurma);
+        }
 
         return alunoRepository.save(aluno);
     }
