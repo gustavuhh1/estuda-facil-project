@@ -1,10 +1,12 @@
 package com.unifor.estuda_facil.controller;
 
 import com.unifor.estuda_facil.factory.TarefaFactory;
+import com.unifor.estuda_facil.models.dto.AlunoConclusaoDTO;
 import com.unifor.estuda_facil.models.dto.TarefaDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.Tarefa;
 import com.unifor.estuda_facil.models.entity.Turma;
+import com.unifor.estuda_facil.service.AlunoTarefaService;
 import com.unifor.estuda_facil.service.ProfessorService;
 import com.unifor.estuda_facil.service.TarefaService;
 import com.unifor.estuda_facil.service.TurmaService;
@@ -16,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/tarefa")
@@ -25,6 +28,7 @@ public class TarefaController {
     private final TarefaService tarefaService;
     private final TurmaService turmaService;
     private final ProfessorService professorService;
+    private final AlunoTarefaService alunoTarefaService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR')")
@@ -85,5 +89,12 @@ public class TarefaController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         tarefaService.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/conclusoes")
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'COORDENACAO')")
+    public ResponseEntity<List<AlunoConclusaoDTO>> listarAlunosQueConcluiram(@PathVariable Long id) {
+        List<AlunoConclusaoDTO> alunos = alunoTarefaService.listarAlunosQueConcluiramTarefa(id);
+        return ResponseEntity.ok(alunos);
     }
 }

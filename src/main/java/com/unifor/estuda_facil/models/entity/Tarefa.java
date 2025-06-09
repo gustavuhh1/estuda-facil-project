@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -33,4 +34,7 @@ public class Tarefa {
     @ManyToOne
     @JoinColumn(name = "professor_id")
     private Professor professor;
+
+    @OneToMany(mappedBy = "tarefa")
+    private List<AlunoTarefa> conclusoes;
 }

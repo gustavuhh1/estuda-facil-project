@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -25,4 +26,7 @@ public class Aluno extends Usuario{
     @ToString.Exclude
     @JsonBackReference
     private Turma turma;
+
+    @OneToMany(mappedBy = "aluno")
+    private List<AlunoTarefa> tarefasConcluidas;
 }
