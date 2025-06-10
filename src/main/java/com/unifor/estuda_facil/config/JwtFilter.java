@@ -1,5 +1,7 @@
 package com.unifor.estuda_facil.config;
 
+import com.unifor.estuda_facil.models.entity.Usuario;
+import com.unifor.estuda_facil.repository.UsuarioRepository;
 import com.unifor.estuda_facil.service.CustomUserDetailsService;
 import com.unifor.estuda_facil.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -20,10 +22,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
+    private final UsuarioRepository usuarioRepository;
 
-    public JwtFilter(JwtService jwtService, CustomUserDetailsService userDetailsService) {
+    public JwtFilter(JwtService jwtService, CustomUserDetailsService userDetailsService, UsuarioRepository usuarioRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override
@@ -43,9 +47,11 @@ public class JwtFilter extends OncePerRequestFilter {
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             if (jwtService.isTokenValid(token, userDetails)) {
+                Usuario usuario = usuarioRepository.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
+                                usuario, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

@@ -47,30 +47,13 @@ public class AdminService {
     @Loggable
     public Admin atualizarAdmin(UUID id, AdminDTO dto) {
         Admin adminExistente = buscarPorId(id);
-
-        if (dto.getNome() != null && !dto.getNome().isBlank()) {
-            adminExistente.setNome(dto.getNome());
-        }
-
-        if (dto.getDepartamento() != null && !dto.getDepartamento().isBlank()) {
-            adminExistente.setDepartamento(dto.getDepartamento());
-        }
-
-        if (dto.getTelefoneContato() != null && !dto.getTelefoneContato().isBlank()) {
-            adminExistente.setTelefoneContato(dto.getTelefoneContato());
-        }
-
-        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
-            adminExistente.setEmail(dto.getEmail());
-        }
-
-        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
-            adminExistente.setSenha(dto.getSenha());
-        }
-
+        adminExistente.setNome(dto.getNome());
+        adminExistente.setDepartamento(dto.getDepartamento());
+        adminExistente.setTelefoneContato(dto.getTelefoneContato());
+        adminExistente.setEmail(dto.getEmail());
+        adminExistente.setSenha(dto.getSenha());
         return adminRepository.save(adminExistente);
     }
-
 
     @Loggable
     public void deletarAdmin(UUID id) {
