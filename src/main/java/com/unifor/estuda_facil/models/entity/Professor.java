@@ -21,12 +21,5 @@ public class Professor extends Usuario {
     private String disciplina;
     private String telefone;
 
-    @ManyToMany
-    @JoinTable(
-            name = "turma_professor",
-            joinColumns = @JoinColumn(name = "turma_id"),
-            inverseJoinColumns = @JoinColumn(name = "professor_id")
-    )
-    private List<Turma> turmas;
 
 }
