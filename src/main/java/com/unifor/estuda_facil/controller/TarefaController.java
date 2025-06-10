@@ -2,6 +2,7 @@ package com.unifor.estuda_facil.controller;
 
 import com.unifor.estuda_facil.factory.TarefaFactory;
 import com.unifor.estuda_facil.models.dto.TarefaDTO;
+import com.unifor.estuda_facil.models.dto.TarefaResponseDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.Tarefa;
 import com.unifor.estuda_facil.models.entity.Turma;
@@ -47,13 +48,13 @@ public class TarefaController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO')")
-    public ResponseEntity<TarefaDTO> buscar(@PathVariable Long id) {
+    public ResponseEntity<TarefaResponseDTO> buscar(@PathVariable Long id) {
         return ResponseEntity.ok(tarefaService.buscarPorId(id));
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('COORDENACAO', 'PROFESSOR', 'ALUNO')")
-    public ResponseEntity<List<TarefaDTO>> listar() {
+    public ResponseEntity<List<TarefaResponseDTO>> listar() {
         return ResponseEntity.ok(tarefaService.listarTodas());
     }
 
@@ -85,5 +86,10 @@ public class TarefaController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         tarefaService.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/turma/{id}")
+    public ResponseEntity<List<TarefaResponseDTO>> listarPorTurma(@PathVariable Long id) {
+        return ResponseEntity.ok(tarefaService.listarPorTurma(id));
     }
 }

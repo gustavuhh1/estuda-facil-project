@@ -1,14 +1,13 @@
 package com.unifor.estuda_facil.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Data
 @Entity
 @Table(name = "professores")
@@ -21,12 +20,10 @@ public class Professor extends Usuario {
     private String disciplina;
     private String telefone;
 
-    @ManyToMany
-    @JoinTable(
-            name = "turma_professor",
-            joinColumns = @JoinColumn(name = "turma_id"),
-            inverseJoinColumns = @JoinColumn(name = "professor_id")
-    )
+    @ManyToMany(mappedBy = "professores")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JsonBackReference
     private List<Turma> turmas;
 
 }

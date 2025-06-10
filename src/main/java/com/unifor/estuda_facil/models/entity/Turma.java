@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "turmas")
+@ToString
 public class Turma {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,8 @@ public class Turma {
             joinColumns = @JoinColumn(name = "turma_id"),
             inverseJoinColumns = @JoinColumn(name = "professor_id")
     )
+    @ToString.Exclude
+    @JsonManagedReference
     private List<Professor> professores;
 
 

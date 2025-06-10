@@ -2,7 +2,10 @@ package com.unifor.estuda_facil.service;
 
 import com.unifor.estuda_facil.aspect.Loggable;
 import com.unifor.estuda_facil.factory.TarefaFactory;
+import com.unifor.estuda_facil.models.dto.ProfessorDTO;
+import com.unifor.estuda_facil.models.dto.ProfessorResponseDTO;
 import com.unifor.estuda_facil.models.dto.TarefaDTO;
+import com.unifor.estuda_facil.models.dto.TarefaResponseDTO;
 import com.unifor.estuda_facil.models.entity.Professor;
 import com.unifor.estuda_facil.models.entity.Tarefa;
 import com.unifor.estuda_facil.models.entity.Turma;
@@ -25,16 +28,16 @@ public class TarefaService {
     private final ProfessorRepository professorRepository;
 
     @Loggable
-    public List<TarefaDTO> listarTodas() {
+    public List<TarefaResponseDTO> listarTodas() {
         return tarefaRepository.findAll().stream()
-                .map(t -> new TarefaDTO(t.getId(), t.getTitulo(), t.getDescricao(), t.getDataEntrega(), t.getDisciplina(), Optional.ofNullable(t.getTurma()).map(Turma::getId).orElse(null), t.getProfessor().getId()))
+                .map(t -> new TarefaResponseDTO(t.getId(), t.getTitulo(), t.getDescricao(), t.getDataEntrega(), t.getDisciplina(), Optional.ofNullable(t.getTurma()).map(Turma::getId).orElse(null), new ProfessorResponseDTO(t.getProfessor().getId(), t.getProfessor().getEmail(), t.getProfessor().getRole(), t.getProfessor().getNome(), t.getProfessor().getNome(), t.getProfessor().getTelefone())))
                 .collect(Collectors.toList());
     }
 
     @Loggable
-    public TarefaDTO buscarPorId(Long id) {
+    public TarefaResponseDTO buscarPorId(Long id) {
         return tarefaRepository.findById(id)
-                .map(t -> new TarefaDTO(t.getId(), t.getTitulo(), t.getDescricao(), t.getDataEntrega(), t.getDisciplina(), Optional.ofNullable(t.getTurma()).map(Turma::getId).orElse(null), t.getProfessor().getId()))
+                .map(t -> new TarefaResponseDTO(t.getId(), t.getTitulo(), t.getDescricao(), t.getDataEntrega(), t.getDisciplina(), Optional.ofNullable(t.getTurma()).map(Turma::getId).orElse(null), new ProfessorResponseDTO(t.getProfessor().getId(), t.getProfessor().getEmail(), t.getProfessor().getRole(), t.getProfessor().getNome(), t.getProfessor().getNome(), t.getProfessor().getTelefone())))
                 .orElse(null);
     }
 
@@ -77,5 +80,21 @@ public class TarefaService {
             throw new RuntimeException("Tarefa não encontrada");
         }
         tarefaRepository.deleteById(id);
+    }
+
+    @Loggable
+    public List<TarefaResponseDTO> listarPorTurma(Long turmaId) {
+        return tarefaRepository.findAll().stream()
+                .filter(t -> t.getTurma() != null && t.getTurma().getId().equals(turmaId))
+                .map(t -> new TarefaResponseDTO(
+                        t.getId(),
+                        t.getTitulo(),
+                        t.getDescricao(),
+                        t.getDataEntrega(),
+                        t.getDisciplina(),
+                        t.getTurma().getId(),
+                        new ProfessorResponseDTO(t.getProfessor().getId(), t.getProfessor().getEmail(), t.getProfessor().getRole(), t.getProfessor().getNome(), t.getProfessor().getNome(), t.getProfessor().getTelefone())
+                ))
+                .collect(Collectors.toList());
     }
 }
